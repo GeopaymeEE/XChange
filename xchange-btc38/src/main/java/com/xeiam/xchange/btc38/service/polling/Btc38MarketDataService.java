@@ -18,26 +18,31 @@ import java.io.IOException;
  * Created by Yingzhe on 12/19/2014.
  */
 public class Btc38MarketDataService extends Btc38MarketDataServiceRaw implements PollingMarketDataService {
-    public Btc38MarketDataService(ExchangeSpecification exchangeSpecification) {
-        super(exchangeSpecification);
-    }
 
-    @Override
-    public Ticker getTicker(CurrencyPair currencyPair, Object... args) throws ExchangeException, NotAvailableFromExchangeException, NotYetImplementedForExchangeException, IOException {
-        // Request data
-        Btc38Ticker btc38Ticker = getBtc38Ticker(currencyPair.baseSymbol, currencyPair.counterSymbol);
+  public Btc38MarketDataService(ExchangeSpecification exchangeSpecification) {
 
-        // Adapt to XChange DTOs
-        return Btc38Adapters.adaptTicker(btc38Ticker, currencyPair);
-    }
+    super(exchangeSpecification);
+  }
 
-    @Override
-    public OrderBook getOrderBook(CurrencyPair currencyPair, Object... args) throws ExchangeException, NotAvailableFromExchangeException, NotYetImplementedForExchangeException, IOException {
-        return null;
-    }
+  @Override
+  public Ticker getTicker(CurrencyPair currencyPair, Object... args) throws ExchangeException, NotAvailableFromExchangeException, NotYetImplementedForExchangeException, IOException {
 
-    @Override
-    public Trades getTrades(CurrencyPair currencyPair, Object... args) throws ExchangeException, NotAvailableFromExchangeException, NotYetImplementedForExchangeException, IOException {
-        return null;
-    }
+    // Request data
+    Btc38Ticker btc38Ticker = getBtc38Ticker(currencyPair.baseSymbol, currencyPair.counterSymbol);
+
+    // Adapt to XChange DTOs
+    return Btc38Adapters.adaptTicker(btc38Ticker, currencyPair);
+  }
+
+  @Override
+  public OrderBook getOrderBook(CurrencyPair currencyPair, Object... args) throws ExchangeException, NotAvailableFromExchangeException, NotYetImplementedForExchangeException, IOException {
+
+    return null;
+  }
+
+  @Override
+  public Trades getTrades(CurrencyPair currencyPair, Object... args) throws ExchangeException, NotAvailableFromExchangeException, NotYetImplementedForExchangeException, IOException {
+
+    return null;
+  }
 }
