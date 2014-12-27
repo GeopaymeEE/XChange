@@ -1,0 +1,23 @@
+{
+   "code":1,
+   "data":{
+      "min_24h_price":"0.00000058",
+      "min_24h_time":"1419650536",
+      "max_24h_price":"0.00000061",
+      "max_24h_time":"1419616810",
+      "trade_price":"0.00000059",
+      "change_24h":"0.0000",
+      "volume_24h_DOGE":"20595302.55147269",
+      "volume_24h_BTC":"11.98391713",
+      "avg_24h":"0.00000058",
+      "type":"DOGE",
+      "exchange":"BTC",
+      "type_volume":"20595302.55147269",
+      "exchange_volume":"11.98391713",
+      "top_bid":"0.00000059",
+      "top_ask":"0.00000060",
+      "name":"DogeCoin",
+      "status":"1",
+      "wallet_status":"1"
+   }
+}

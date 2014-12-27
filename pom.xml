@@ -66,6 +66,7 @@
 	</ciManagement>
 
 	<modules>
+		<module>xchange-allcoin</module>
 		<module>xchange-anx</module>
 		<module>xchange-bitbay</module>
 		<module>xchange-bitcoinaverage</module>
@@ -108,6 +109,7 @@
 		<module>xchange-poloniex</module>
 		<module>xchange-vaultofsatoshi</module>
 		<module>xchange-vircurex</module>
+		<module>xchange-allcoin</module>
 		<module>xchange-btc38</module>
 	</modules>
 
