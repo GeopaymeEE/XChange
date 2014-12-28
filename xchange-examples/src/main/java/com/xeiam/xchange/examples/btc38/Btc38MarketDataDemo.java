@@ -9,11 +9,13 @@ import com.xeiam.xchange.dto.marketdata.Ticker;
  * Created by Yingzhe on 12/20/2014.
  */
 public class Btc38MarketDataDemo {
-    public static void main(String[] args) throws Exception {
-        Btc38Exchange exchange = new Btc38Exchange();
-        exchange.applySpecification(exchange.getDefaultExchangeSpecification());
-        Btc38MarketDataService marketDataService = (Btc38MarketDataService) exchange.getPollingMarketDataService();
-        Ticker ticker = marketDataService.getTicker(new CurrencyPair("DOGE", "BTC"));
-        System.out.println(ticker.toString());
-    }
+
+  public static void main(String[] args) throws Exception {
+
+    Btc38Exchange exchange = new Btc38Exchange();
+    exchange.applySpecification(exchange.getDefaultExchangeSpecification());
+    Btc38MarketDataService marketDataService = (Btc38MarketDataService) exchange.getPollingMarketDataService();
+    Ticker ticker = marketDataService.getTicker(new CurrencyPair("XRP", "BTC"));
+    System.out.println(ticker.toString());
+  }
 }
