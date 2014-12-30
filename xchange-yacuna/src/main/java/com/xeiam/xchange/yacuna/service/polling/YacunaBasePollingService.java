@@ -24,7 +24,7 @@ public class YacunaBasePollingService<T extends Yacuna> extends BaseExchangeServ
   protected YacunaBasePollingService(Class<T> type, ExchangeSpecification exchangeSpecification) {
 
     super(exchangeSpecification);
-    this.yacuna = RestProxyFactory.createProxy(type, (String) exchangeSpecification.getSslUri());
+    this.yacuna = RestProxyFactory.createProxy(type, exchangeSpecification.getSslUri());
   }
 
   protected HashMap<String, CurrencyPair> getCurrencyPairMap() throws IOException {

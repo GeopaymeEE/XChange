@@ -1,93 +1,83 @@
 package com.xeiam.xchange.allcoin.api2.dto.marketdata;
 
 import java.math.BigDecimal;
-import java.text.ParseException;
-import java.util.Date;
-import java.util.List;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class AllcoinTicker {
 
-	private final BigDecimal ask;
-	private final BigDecimal bid;
-	private final BigDecimal last;
-	private final BigDecimal low;
-	private final BigDecimal high;
-	private final BigDecimal volume;
-	private final long timetamp;
+  private final BigDecimal ask;
+  private final BigDecimal bid;
+  private final BigDecimal last;
+  private final BigDecimal low;
+  private final BigDecimal high;
+  private final BigDecimal volume;
+  private final long timetamp;
 
-	/**
-	 * Constructor
-	 * 
-	 * @param ask
-	 * @param bid
-	 * @param last
-	 * @param low
-	 * @param high
-	 * @param volume
-	 * @param timetamp
-	 */
-	public AllcoinTicker(@JsonProperty("top_ask") BigDecimal ask,
-			@JsonProperty("top_bid") BigDecimal bid,
-			@JsonProperty("trade_price") BigDecimal last,
-			@JsonProperty("min_24h_price") BigDecimal low,
-			@JsonProperty("max_24h_price") BigDecimal high,
-			@JsonProperty("type_volume") BigDecimal volume,
-			@JsonProperty("min_24h_time") long timetamp) {
-		this.ask = ask;
-		this.bid = bid;
-		this.last = last;
-		this.low = low;
-		this.high = high;
-		this.volume = volume;
-		this.timetamp = timetamp;
-	}
+  /**
+   * Constructor
+   * 
+   * @param ask
+   * @param bid
+   * @param last
+   * @param low
+   * @param high
+   * @param volume
+   * @param timetamp
+   */
+  public AllcoinTicker(@JsonProperty("top_ask") BigDecimal ask, @JsonProperty("top_bid") BigDecimal bid, @JsonProperty("trade_price") BigDecimal last, @JsonProperty("min_24h_price") BigDecimal low,
+      @JsonProperty("max_24h_price") BigDecimal high, @JsonProperty("type_volume") BigDecimal volume, @JsonProperty("min_24h_time") long timetamp) {
 
-	public BigDecimal getAsk() {
+    this.ask = ask;
+    this.bid = bid;
+    this.last = last;
+    this.low = low;
+    this.high = high;
+    this.volume = volume;
+    this.timetamp = timetamp;
+  }
 
-		return ask;
-	}
+  public BigDecimal getAsk() {
 
-	public BigDecimal getBid() {
+    return ask;
+  }
 
-		return bid;
-	}
+  public BigDecimal getBid() {
 
-	public BigDecimal getLast() {
+    return bid;
+  }
 
-		return last;
-	}
+  public BigDecimal getLast() {
 
-	public BigDecimal getLow() {
+    return last;
+  }
 
-		return low;
-	}
+  public BigDecimal getLow() {
 
-	public BigDecimal getHigh() {
+    return low;
+  }
 
-		return high;
-	}
+  public BigDecimal getHigh() {
 
-	public BigDecimal getVolume() {
+    return high;
+  }
 
-		return volume;
-	}
+  public BigDecimal getVolume() {
 
-	public long getTimetamp() {
+    return volume;
+  }
 
-		return timetamp;
-	}
+  public long getTimetamp() {
 
-	@Override
-	public String toString() {
+    return timetamp;
+  }
 
-		return "AllcoinTicker{" + "ask=" + ask + ", bid=" + bid + ", last="
-				+ last + ", low=" + low + ", high=" + high + ", volume="
-				+ volume + ", timetamp=" + timetamp + '}';
-	}
+  @Override
+  public String toString() {
+
+    return "AllcoinTicker{" + "ask=" + ask + ", bid=" + bid + ", last=" + last + ", low=" + low + ", high=" + high + ", volume=" + volume + ", timetamp=" + timetamp + '}';
+  }
 
 }

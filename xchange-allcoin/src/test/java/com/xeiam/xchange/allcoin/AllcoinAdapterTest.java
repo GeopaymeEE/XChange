@@ -18,26 +18,22 @@ import static org.fest.assertions.api.Assertions.assertThat;
 
 public class AllcoinAdapterTest {
 
-	@Test
-	public void testTickerAdapter() throws IOException {
+  @Test
+  public void testTickerAdapter() throws IOException {
 
-		// Read in the JSON from the example resources
-		InputStream is = AllcoinAdapterTest.class
-				.getResourceAsStream("/example-pair.json");
+    // Read in the JSON from the example resources
+    InputStream is = AllcoinAdapterTest.class.getResourceAsStream("/example-pair.json");
 
-		ObjectMapper mapper = new ObjectMapper();
-		AllcoinTickerReturn tickerReturn = mapper.readValue(is,
-				AllcoinTickerReturn.class);
-		Ticker ticker = AllcoinAdapters.adaptTicker(tickerReturn,
-				CurrencyPair.DOGE_BTC);
+    ObjectMapper mapper = new ObjectMapper();
+    AllcoinTickerReturn tickerReturn = mapper.readValue(is, AllcoinTickerReturn.class);
+    Ticker ticker = AllcoinAdapters.adaptTicker(tickerReturn, CurrencyPair.DOGE_BTC);
 
-		assertThat(ticker.getHigh()).isEqualTo(new BigDecimal("0.00000061"));
-		assertThat(ticker.getLow()).isEqualTo(new BigDecimal("0.00000058"));
-		assertThat(ticker.getLast()).isEqualTo(new BigDecimal("0.00000059"));
-		assertThat(ticker.getVolume()).isEqualTo(
-				new BigDecimal("20595302.55147269"));
-		assertThat(ticker.getAsk()).isEqualTo(new BigDecimal("0.00000060"));
-		assertThat(ticker.getBid()).isEqualTo(new BigDecimal("0.00000059"));
-	}
+    assertThat(ticker.getHigh()).isEqualTo(new BigDecimal("0.00000061"));
+    assertThat(ticker.getLow()).isEqualTo(new BigDecimal("0.00000058"));
+    assertThat(ticker.getLast()).isEqualTo(new BigDecimal("0.00000059"));
+    assertThat(ticker.getVolume()).isEqualTo(new BigDecimal("20595302.55147269"));
+    assertThat(ticker.getAsk()).isEqualTo(new BigDecimal("0.00000060"));
+    assertThat(ticker.getBid()).isEqualTo(new BigDecimal("0.00000059"));
+  }
 
 }

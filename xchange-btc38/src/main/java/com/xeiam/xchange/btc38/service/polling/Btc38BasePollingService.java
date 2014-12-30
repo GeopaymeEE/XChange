@@ -1,9 +1,12 @@
 package com.xeiam.xchange.btc38.service.polling;
 
 import com.xeiam.xchange.ExchangeSpecification;
+import com.xeiam.xchange.btc38.Btc38;
+import com.xeiam.xchange.btc38.dto.marketdata.Btc38TickerReturn;
 import com.xeiam.xchange.currency.CurrencyPair;
 import com.xeiam.xchange.service.BaseExchangeService;
 import com.xeiam.xchange.service.polling.BasePollingService;
+import si.mazi.rescu.RestProxyFactory;
 
 import java.io.IOException;
 import java.util.*;
@@ -11,20 +14,23 @@ import java.util.*;
 /**
  * Created by Yingzhe on 12/18/2014.
  */
-public class Btc38BasePollingService extends BaseExchangeService implements BasePollingService {
+public class Btc38BasePollingService<T extends Btc38> extends BaseExchangeService implements BasePollingService {
 
-  public static final HashMap<String, CurrencyPair> CURRENCY_PAIR_MAP = new HashMap<String, CurrencyPair>();
+  private static HashMap<String, CurrencyPair> CURRENCY_PAIR_MAP;
+  protected final T btc38;
 
   /**
    * Constructor Initialize common properties from the exchange specification
    *
    * @param exchangeSpecification The {@link com.xeiam.xchange.ExchangeSpecification}
    */
-  protected Btc38BasePollingService(ExchangeSpecification exchangeSpecification) {
+  protected Btc38BasePollingService(Class<T> type, ExchangeSpecification exchangeSpecification) {
 
     super(exchangeSpecification);
 
-    CURRENCY_PAIR_MAP.put("LTC_BTC", new CurrencyPair("LTC", "BTC"));
+    this.btc38 = RestProxyFactory.createProxy(type, exchangeSpecification.getSslUri());
+
+    /*CURRENCY_PAIR_MAP.put("LTC_BTC", new CurrencyPair("LTC", "BTC"));
     CURRENCY_PAIR_MAP.put("DOGE_BTC", new CurrencyPair("DOGE", "BTC"));
     CURRENCY_PAIR_MAP.put("XRP_BTC", new CurrencyPair("XRP", "BTC"));
     CURRENCY_PAIR_MAP.put("BTS_BTC", new CurrencyPair("BTS", "BTC"));
@@ -69,12 +75,39 @@ public class Btc38BasePollingService extends BaseExchangeService implements Base
     CURRENCY_PAIR_MAP.put("BILS_CNY", new CurrencyPair("BILS", "CNY"));
     CURRENCY_PAIR_MAP.put("BOST_CNY", new CurrencyPair("BOST", "CNY"));
     CURRENCY_PAIR_MAP.put("NXT_CNY", new CurrencyPair("NXT", "CNY"));
-    CURRENCY_PAIR_MAP.put("BC_CNY", new CurrencyPair("BC", "CNY"));
+    CURRENCY_PAIR_MAP.put("BC_CNY", new CurrencyPair("BC", "CNY"));*/
+  }
+
+  protected HashMap<String, CurrencyPair> getCurrencyPairMap() throws IOException {
+
+    if (CURRENCY_PAIR_MAP == null) {
+      CURRENCY_PAIR_MAP = new HashMap<String, CurrencyPair>();
+      Map<String, Btc38TickerReturn> btcTickers = this.btc38.getMarketTicker("BTC");
+      Map<String, Btc38TickerReturn> cnyTickers = this.btc38.getMarketTicker("CNY");
+
+      if (btcTickers != null) {
+        for (String key : btcTickers.keySet()) {
+          String base = key.toUpperCase();
+          String target = "BTC";
+          CURRENCY_PAIR_MAP.put(base + "_" + target, new CurrencyPair(base, target));
+        }
+      }
+
+      if (cnyTickers != null) {
+        for (String key : cnyTickers.keySet()) {
+          String base = key.toUpperCase();
+          String target = "CNY";
+          CURRENCY_PAIR_MAP.put(base + "_" + target, new CurrencyPair(base, target));
+        }
+      }
+    }
+
+    return CURRENCY_PAIR_MAP;
   }
 
   @Override
   public Collection<CurrencyPair> getExchangeSymbols() throws IOException {
 
-    return CURRENCY_PAIR_MAP.values();
+    return this.getCurrencyPairMap().values();
   }
 }

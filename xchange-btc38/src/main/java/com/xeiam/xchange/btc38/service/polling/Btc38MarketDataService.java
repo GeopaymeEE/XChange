@@ -31,7 +31,7 @@ public class Btc38MarketDataService extends Btc38MarketDataServiceRaw implements
     Btc38Ticker btc38Ticker = getBtc38Ticker(currencyPair.baseSymbol, currencyPair.counterSymbol);
 
     // Adapt to XChange DTOs
-    return Btc38Adapters.adaptTicker(btc38Ticker, currencyPair);
+    return btc38Ticker != null ? Btc38Adapters.adaptTicker(btc38Ticker, currencyPair) : null;
   }
 
   @Override

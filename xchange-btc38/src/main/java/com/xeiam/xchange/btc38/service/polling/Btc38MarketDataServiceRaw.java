@@ -12,9 +12,7 @@ import java.util.Map;
 /**
  * Created by Yingzhe on 12/19/2014.
  */
-public class Btc38MarketDataServiceRaw extends Btc38BasePollingService {
-
-  private final Btc38 btc38;
+public class Btc38MarketDataServiceRaw extends Btc38BasePollingService<Btc38> {
 
   /**
    * Constructor for Btc38MarketDataServiceRaw
@@ -23,8 +21,7 @@ public class Btc38MarketDataServiceRaw extends Btc38BasePollingService {
    */
   public Btc38MarketDataServiceRaw(ExchangeSpecification exchangeSpecification) {
 
-    super(exchangeSpecification);
-    this.btc38 = RestProxyFactory.createProxy(Btc38.class, exchangeSpecification.getSslUri());
+    super(Btc38.class, exchangeSpecification);
   }
 
   /**
@@ -37,7 +34,7 @@ public class Btc38MarketDataServiceRaw extends Btc38BasePollingService {
    */
   public Btc38Ticker getBtc38Ticker(String baseCurrency, String targetCurrency) throws IOException {
 
-    if (!Btc38BasePollingService.CURRENCY_PAIR_MAP.containsKey(baseCurrency.toUpperCase() + "_" + targetCurrency.toUpperCase())) {
+    if (!this.getCurrencyPairMap().containsKey(baseCurrency.toUpperCase() + "_" + targetCurrency.toUpperCase())) {
       return null;
     }
 

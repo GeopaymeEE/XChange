@@ -15,7 +15,7 @@ public class Btc38MarketDataDemo {
     Btc38Exchange exchange = new Btc38Exchange();
     exchange.applySpecification(exchange.getDefaultExchangeSpecification());
     Btc38MarketDataService marketDataService = (Btc38MarketDataService) exchange.getPollingMarketDataService();
-    Ticker ticker = marketDataService.getTicker(new CurrencyPair("XRP", "BTC"));
+    Ticker ticker = marketDataService.getTicker(new CurrencyPair("LTC", "BTC"));
     System.out.println(ticker.toString());
   }
 }
