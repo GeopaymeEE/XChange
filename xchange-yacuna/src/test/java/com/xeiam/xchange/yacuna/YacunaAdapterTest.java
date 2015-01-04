@@ -29,7 +29,7 @@ public class YacunaAdapterTest {
     TypeFactory t = TypeFactory.defaultInstance();
     YacunaTickerReturn tickerReturn = mapper.readValue(is, YacunaTickerReturn.class);
 
-    Ticker ticker = YacunaAdapters.adaptTicker(tickerReturn.getTickerList().get(0), new CurrencyPair("EUR", "XBT"));
+    Ticker ticker = YacunaAdapters.adaptTicker(tickerReturn.getTickerList().get(0), new CurrencyPair("XBT", "EUR"));
 
     assertThat(ticker.getHigh()).isEqualTo(new BigDecimal("279.00"));
     assertThat(ticker.getLow()).isEqualTo(new BigDecimal("273.04"));

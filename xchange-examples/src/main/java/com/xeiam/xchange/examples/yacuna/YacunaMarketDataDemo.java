@@ -15,7 +15,7 @@ public class YacunaMarketDataDemo {
     YacunaExchange exchange = new YacunaExchange();
     exchange.applySpecification(exchange.getDefaultExchangeSpecification());
     YacunaMarketDataService marketDataService = (YacunaMarketDataService) exchange.getPollingMarketDataService();
-    Ticker ticker = marketDataService.getTicker(new CurrencyPair("EUR", "XBT"));
+    Ticker ticker = marketDataService.getTicker(new CurrencyPair("XBT", "EUR"));
     System.out.println(ticker.toString());
   }
 }

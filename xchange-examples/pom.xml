@@ -259,6 +259,12 @@
 			<artifactId>xchange-yacuna</artifactId>
 			<version>${project.version}</version>
 		</dependency>
+		<!-- XChange Huobi exchange support -->
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>xchange-huobi</artifactId>
+			<version>${project.version}</version>
+		</dependency>
 
 		<dependency>
 			<groupId>ch.qos.logback</groupId>

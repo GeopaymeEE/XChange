@@ -26,8 +26,8 @@ public interface Yacuna {
    * @throws java.io.IOException
    */
   @GET
-  @Path("market/list?currency1={baseCurrency}&currency2={targetCurrency}")
-  public YacunaTickerReturn getTicker(@PathParam("baseCurrency") String baseCurrency, @PathParam("targetCurrency") String targetCurrency) throws IOException;
+  @Path("market/list?currency1={targetCurrency}&currency2={baseCurrency}")
+  public YacunaTickerReturn getTicker(@PathParam("targetCurrency") String targetCurrency, @PathParam("baseCurrency") String baseCurrency) throws IOException;
 
   /**
    * Gets all tickers from Yacuna

@@ -14,11 +14,11 @@ public class YacunaTicker {
   private final YacunaTickerOverallStatistics overallStatistics;
   private final YacunaTickerDailyStatistics dailyStatistics;
 
-  public YacunaTicker(@JsonProperty("currencyCode1") String baseCurrency, @JsonProperty("currencyCode2") String targetCurrency,
+  public YacunaTicker(@JsonProperty("currencyCode1") String targetCurrency, @JsonProperty("currencyCode2") String baseCurrency,
       @JsonProperty("marketStatistics") YacunaTickerOverallStatistics overallStatistics, @JsonProperty("market24hStatistics") YacunaTickerDailyStatistics dailyStatistics) {
 
-    this.baseCurrency = baseCurrency;
     this.targetCurrency = targetCurrency;
+    this.baseCurrency = baseCurrency;
     this.overallStatistics = overallStatistics;
     this.dailyStatistics = dailyStatistics;
   }

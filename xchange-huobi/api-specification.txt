@@ -1,0 +1,14 @@
+com.xeiam.xchange.huobi.Huobi Web Service API specification
+================================
+
+Public API:
+
+Documentation
+------
+https://www.huobi.com/help/index.php?a=market_help
+
+Ticker
+------
+http://api.huobi.com/staticmarket/ticker_btc_json.js (Ticker for BTC/CNY. Note: Currency code has to be lower case, otherwise server throws an error)
+
+
