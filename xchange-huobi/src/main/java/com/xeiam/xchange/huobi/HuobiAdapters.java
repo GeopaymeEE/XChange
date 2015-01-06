@@ -25,7 +25,7 @@ public class HuobiAdapters {
         BigDecimal buy = ticker.getBuy();
         BigDecimal sell = ticker.getSell();
         BigDecimal volume = ticker.getVolume();
-        Date date = new Date(tickerReturn.getTimestamp());
+        Date date = new Date(tickerReturn.getTimestamp() * 1000);
 
         return new Ticker.Builder().currencyPair(currencyPair).last(last).high(high).low(low).bid(buy).ask(sell).volume(volume).timestamp(date).build();
     }
