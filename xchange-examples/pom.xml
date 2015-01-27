@@ -235,7 +235,6 @@
 			<artifactId>xchange-bitcointoyou</artifactId>
 			<version>${project.version}</version>
 		</dependency>
-<<<<<<< HEAD
 		<!-- XChange Btc38 exchange support -->
 		<dependency>
 			<groupId>${project.groupId}</groupId>
@@ -261,15 +260,13 @@
 			<version>${project.version}</version>
 		</dependency>
 
-=======
         <!-- XChange Bitbay exchange support -->
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>xchange-bitbay</artifactId>
             <version>${project.version}</version>
         </dependency>
-        
->>>>>>> 9592407b087e638b5b6b580e35edbcf61983f160
+
 		<dependency>
 			<groupId>ch.qos.logback</groupId>
 			<artifactId>logback-classic</artifactId>
