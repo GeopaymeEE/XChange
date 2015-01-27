@@ -18,9 +18,9 @@ import com.xeiam.xchange.service.polling.trade.TradeHistoryParams;
 
 public class AtlasPollingTradeService extends BasePollingExchangeService implements PollingTradeService {
 
-  public AtlasPollingTradeService(ExchangeSpecification exchangeSpecification) {
+  public AtlasPollingTradeService(Exchange exchange) {
 
-    super(exchangeSpecification);
+    super(exchange);
     // TODO Auto-generated constructor stub
   }
 
@@ -67,7 +67,7 @@ public class AtlasPollingTradeService extends BasePollingExchangeService impleme
   }
 
   @Override
-  public UserTrades getTradeHistory(TradeHistoryParams params) throws ExchangeException, NotAvailableFromExchangeException, NotYetImplementedForExchangeException, IOException {
+  public UserTrades getTradeHistory(TradeHistoryParams params) throws IOException {
 
     // TODO Auto-generated method stub
     return null;

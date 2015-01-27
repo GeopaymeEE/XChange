@@ -17,8 +17,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-import com.xeiam.xchange.ExchangeException;
 import com.xeiam.xchange.bitvc.dto.account.BitVcAccountInfo;
+import com.xeiam.xchange.bitvc.dto.account.HuobiAccountInfo;
 import com.xeiam.xchange.bitvc.dto.marketdata.BitVcDepth;
 import com.xeiam.xchange.bitvc.dto.marketdata.BitVcOrderBookTAS;
 import com.xeiam.xchange.bitvc.dto.marketdata.BitVcTicker;
@@ -35,6 +35,7 @@ import com.xeiam.xchange.dto.marketdata.Trade;
 import com.xeiam.xchange.dto.marketdata.Trades;
 import com.xeiam.xchange.dto.trade.LimitOrder;
 import com.xeiam.xchange.dto.trade.Wallet;
+import com.xeiam.xchange.exceptions.ExchangeException;
 
 public final class BitVcAdapters {
 
@@ -47,9 +48,8 @@ public final class BitVcAdapters {
   public static Ticker adaptTicker(BitVcTicker BitVcTicker, CurrencyPair currencyPair) {
 
     BitVcTickerObject ticker = BitVcTicker.getTicker();
-    return new Ticker.Builder().currencyPair(currencyPair).last(ticker.getLast()).bid(ticker.getBuy())
-        .ask(ticker.getSell()).high(ticker.getHigh()).low(ticker.getLow())
-        .volume(ticker.getVol()).timestamp(new Date()).build();
+    return new Ticker.Builder().currencyPair(currencyPair).last(ticker.getLast()).bid(ticker.getBuy()).ask(ticker.getSell()).high(ticker.getHigh()).low(ticker.getLow()).volume(ticker.getVol())
+        .build();
   }
 
   public static OrderBook adaptOrderBook(BitVcDepth BitVcDepth, CurrencyPair currencyPair) {
@@ -59,7 +59,7 @@ public final class BitVcAdapters {
 
     List<LimitOrder> bids = adaptOrderBook(BitVcDepth.getBids(), BID, currencyPair);
 
-    return new OrderBook(new Date(), asks, bids);
+    return new OrderBook(null, asks, bids);
   }
 
   private static List<LimitOrder> adaptOrderBook(BigDecimal[][] orders, OrderType type, CurrencyPair currencyPair) {
@@ -116,12 +116,26 @@ public final class BitVcAdapters {
     return new AccountInfo(null, wallets);
   }
 
+  public static AccountInfo adaptHuobiAccountInfo(HuobiAccountInfo a) {
+
+    Wallet cny = new Wallet(CNY, a.getAvailableCnyDisplay().add(a.getFrozenCnyDisplay()).subtract(a.getLoanCnyDisplay()), "available");
+    Wallet btc = new Wallet(BTC, a.getAvailableBtcDisplay().add(a.getFrozenBtcDisplay()).subtract(a.getLoanBtcDisplay()), "available");
+    Wallet ltc = new Wallet(LTC, a.getAvailableLtcDisplay().add(a.getFrozenLtcDisplay()).subtract(a.getLoanLtcDisplay()), "available");
+
+    // loaned wallets
+    Wallet cnyLoan = new Wallet(CNY, a.getLoanCnyDisplay(), "loan");
+    Wallet btcLoan = new Wallet(BTC, a.getLoanBtcDisplay(), "loan");
+    Wallet ltcLoan = new Wallet(LTC, a.getLoanLtcDisplay(), "loan");
+
+    List<Wallet> wallets = Arrays.asList(cny, btc, ltc, cnyLoan, btcLoan, ltcLoan);
+    return new AccountInfo(null, wallets);
+  }
+
   public static String adaptPlaceOrderResult(BitVcPlaceOrderResult result) {
 
     if (result.getCode() == 0) {
       return String.valueOf(result.getId());
-    }
-    else {
+    } else {
       throw new ExchangeException("Error code: " + result.getCode());
     }
   }
@@ -129,8 +143,8 @@ public final class BitVcAdapters {
   public static List<LimitOrder> adaptOpenOrders(BitVcOrder[] orders, CurrencyPair currencyPair) {
 
     List<LimitOrder> openOrders = new ArrayList<LimitOrder>(orders.length);
-    for (BitVcOrder order : orders) {
-      openOrders.add(adaptOpenOrder(order, currencyPair));
+    for (int i = 0; i < orders.length; i++) {
+      openOrders.add(adaptOpenOrder(orders[i], currencyPair));
     }
     return openOrders;
   }

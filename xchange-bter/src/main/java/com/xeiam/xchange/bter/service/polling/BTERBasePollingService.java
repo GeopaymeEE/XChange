@@ -1,17 +1,18 @@
 package com.xeiam.xchange.bter.service.polling;
 
 import java.io.IOException;
-import java.util.Collection;
+import java.util.ArrayList;
+import java.util.List;
 
 import si.mazi.rescu.ParamsDigest;
 import si.mazi.rescu.RestProxyFactory;
 
-import com.xeiam.xchange.ExchangeException;
-import com.xeiam.xchange.ExchangeSpecification;
+import com.xeiam.xchange.Exchange;
 import com.xeiam.xchange.bter.BTER;
 import com.xeiam.xchange.bter.dto.BTERBaseResponse;
 import com.xeiam.xchange.bter.service.BTERHmacPostBodyDigest;
 import com.xeiam.xchange.currency.CurrencyPair;
+import com.xeiam.xchange.exceptions.ExchangeException;
 import com.xeiam.xchange.service.BaseExchangeService;
 import com.xeiam.xchange.service.polling.BasePollingService;
 
@@ -22,15 +23,20 @@ public class BTERBasePollingService<T extends BTER> extends BaseExchangeService 
   protected final String apiKey;
   protected final T bter;
   protected final ParamsDigest signatureCreator;
-  private Collection<CurrencyPair> pairs;
 
-  public BTERBasePollingService(Class<T> type, ExchangeSpecification exchangeSpecification) {
+  /**
+   * Constructor
+   *
+   * @param type
+   * @param exchange
+   */
+  public BTERBasePollingService(Class<T> type, Exchange exchange) {
 
-    super(exchangeSpecification);
+    super(exchange);
 
-    this.bter = RestProxyFactory.createProxy(type, exchangeSpecification.getSslUri());
-    this.apiKey = exchangeSpecification.getApiKey();
-    this.signatureCreator = BTERHmacPostBodyDigest.createInstance(exchangeSpecification.getSecretKey());
+    this.bter = RestProxyFactory.createProxy(type, exchange.getExchangeSpecification().getSslUri());
+    this.apiKey = exchange.getExchangeSpecification().getApiKey();
+    this.signatureCreator = BTERHmacPostBodyDigest.createInstance(exchange.getExchangeSpecification().getSecretKey());
   }
 
   protected int nextNonce() {
@@ -42,16 +48,13 @@ public class BTERBasePollingService<T extends BTER> extends BaseExchangeService 
   }
 
   @Override
-  public synchronized Collection<CurrencyPair> getExchangeSymbols() throws IOException {
+  public List<CurrencyPair> getExchangeSymbols() throws IOException {
 
-    if (pairs == null) {
-      pairs = bter.getPairs().getPairs();
-    }
-
-    return pairs;
+    List<CurrencyPair> currencyPairs = new ArrayList<CurrencyPair>(bter.getPairs().getPairs());
+    return currencyPairs;
   }
 
-  protected <R extends BTERBaseResponse> R handleResponse(final R response) {
+  protected <R extends BTERBaseResponse> R handleResponse(R response) {
 
     if (!response.isResult()) {
       throw new ExchangeException(response.getMessage());

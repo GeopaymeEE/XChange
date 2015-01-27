@@ -6,11 +6,8 @@ import java.util.Date;
 import java.util.Map;
 
 import com.xeiam.xchange.Exchange;
-import com.xeiam.xchange.ExchangeException;
 import com.xeiam.xchange.ExchangeFactory;
 import com.xeiam.xchange.ExchangeSpecification;
-import com.xeiam.xchange.NotAvailableFromExchangeException;
-import com.xeiam.xchange.NotYetImplementedForExchangeException;
 import com.xeiam.xchange.cryptsy.CryptsyExchange;
 import com.xeiam.xchange.cryptsy.dto.CryptsyOrder.CryptsyOrderType;
 import com.xeiam.xchange.cryptsy.dto.marketdata.CryptsyPublicMarketData;
@@ -22,16 +19,19 @@ import com.xeiam.xchange.cryptsy.service.polling.CryptsyTradeServiceRaw;
 import com.xeiam.xchange.currency.CurrencyPair;
 import com.xeiam.xchange.dto.Order.OrderType;
 import com.xeiam.xchange.dto.trade.LimitOrder;
-import com.xeiam.xchange.service.polling.PollingAccountService;
-import com.xeiam.xchange.service.polling.PollingMarketDataService;
-import com.xeiam.xchange.service.polling.PollingTradeService;
+import com.xeiam.xchange.exceptions.ExchangeException;
+import com.xeiam.xchange.exceptions.NotAvailableFromExchangeException;
+import com.xeiam.xchange.exceptions.NotYetImplementedForExchangeException;
+import com.xeiam.xchange.service.polling.account.PollingAccountService;
+import com.xeiam.xchange.service.polling.marketdata.PollingMarketDataService;
+import com.xeiam.xchange.service.polling.trade.PollingTradeService;
 
 /**
  * This demo shows ALL the functions currently implemented in the Cryptsy Exchange.
- * 
- * Note that requestDepositAddress is commented out, as too many requests on this method seem to lead to 
+ *
+ * Note that requestDepositAddress is commented out, as too many requests on this method seem to lead to
  * Cryptsy blocking that method for the specific account.
- * 
+ *
  * This is running using a test account (Slitil53x/Jeic5OHahx), since all methods require authentication.
  */
 
@@ -99,31 +99,16 @@ public class CryptsyDemo {
   private static void raw(CryptsyAccountServiceRaw accountService, CryptsyMarketDataServiceRaw marketDataService, CryptsyTradeServiceRaw tradeService) throws IOException, InterruptedException {
 
     /*
-     * All the raw methods are listed here:
-     * *
-     * *Account
-     * getCryptsyAccountInfo()
-     * getCryptsyTransactions()
-     * generateNewCryptsyDepositAddress(Integer, String)
-     * getCurrentCryptsyDepositAddresses()
-     * makeCryptsyWithdrawal(String, BigDecimal)
-     * checkTransfers()
-     * getWalletStatus()
-     * *
-     * *MarketData
-     * getCryptsyOrderBook(int)
-     * getCryptsyTrades(int)
-     * getCryptsyMarkets()
-     * *
-     * *Trade
-     * getCryptsySingleMarketTradeHistory(int, int...)
-     * getCryptsyTradeHistory(Date, Date)
-     * getCryptsySingleMarketOpenOrders(int)
-     * getCryptsyOpenOrders()
-     * placeCryptsyLimitOrder(int, CryptsyOrderType, BigDecimal, BigDecimal)
-     * cancelSingleCryptsyLimitOrder(int)
-     * cancelMarketCryptsyLimitOrders(int)
-     * cancelAllCryptsyLimitOrders()
+     * All the raw methods are listed here: * *Account getCryptsyAccountInfo()
+     * getCryptsyTransactions() generateNewCryptsyDepositAddress(Integer,
+     * String) getCurrentCryptsyDepositAddresses() makeCryptsyWithdrawal(String,
+     * BigDecimal) checkTransfers() getWalletStatus() * *MarketData
+     * getCryptsyOrderBook(int) getCryptsyTrades(int) getCryptsyMarkets() *
+     * *Trade getCryptsySingleMarketTradeHistory(int, int...)
+     * getCryptsyTradeHistory(Date, Date) getCryptsySingleMarketOpenOrders(int)
+     * getCryptsyOpenOrders() placeCryptsyLimitOrder(int, CryptsyOrderType,
+     * BigDecimal, BigDecimal) cancelSingleCryptsyLimitOrder(int)
+     * cancelMarketCryptsyLimitOrders(int) cancelAllCryptsyLimitOrders()
      * calculateCryptsyFees(CryptsyOrderType, BigDecimal, BigDecimal)
      */
 
@@ -206,7 +191,7 @@ public class CryptsyDemo {
 
   private static void publicAPI(CryptsyExchange cryptsyExchange) throws ExchangeException, IOException, InterruptedException {
 
-    CryptsyPublicMarketDataService publicMarketDataService = cryptsyExchange.getPublicPollingMarketDataService();
+    CryptsyPublicMarketDataService publicMarketDataService = (CryptsyPublicMarketDataService) cryptsyExchange.getPollingPublicMarketDataService();
     final int DOGE_LTC_MARKET_ID = 135;
     Map<Integer, CryptsyPublicMarketData> singleMarketData = publicMarketDataService.getCryptsyMarketData(DOGE_LTC_MARKET_ID);
     System.out.println(singleMarketData);

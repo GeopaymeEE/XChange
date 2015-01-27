@@ -13,21 +13,14 @@ import com.xeiam.xchange.poloniex.service.polling.PoloniexTradeService;
 
 public class PoloniexExchange extends BaseExchange implements Exchange {
 
-  /**
-   * Default constructor for ExchangeFactory
-   */
-  public PoloniexExchange() {
-
-  }
-
   @Override
   public void applySpecification(ExchangeSpecification exchangeSpecification) {
 
     super.applySpecification(exchangeSpecification);
 
-    this.pollingMarketDataService = new PoloniexMarketDataService(exchangeSpecification);
-    this.pollingAccountService = new PoloniexAccountService(exchangeSpecification);
-    this.pollingTradeService = new PoloniexTradeService(exchangeSpecification);
+    this.pollingMarketDataService = new PoloniexMarketDataService(this);
+    this.pollingAccountService = new PoloniexAccountService(this);
+    this.pollingTradeService = new PoloniexTradeService(this);
   }
 
   @Override

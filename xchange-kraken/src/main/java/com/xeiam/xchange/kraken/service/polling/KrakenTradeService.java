@@ -1,27 +1,34 @@
 package com.xeiam.xchange.kraken.service.polling;
 
-import com.xeiam.xchange.ExchangeException;
-import com.xeiam.xchange.ExchangeSpecification;
+import java.io.IOException;
+import java.util.Date;
+
+import si.mazi.rescu.SynchronizedValueFactory;
+
+import com.xeiam.xchange.Exchange;
 import com.xeiam.xchange.dto.trade.LimitOrder;
 import com.xeiam.xchange.dto.trade.MarketOrder;
 import com.xeiam.xchange.dto.trade.OpenOrders;
 import com.xeiam.xchange.dto.trade.UserTrades;
+import com.xeiam.xchange.exceptions.ExchangeException;
 import com.xeiam.xchange.kraken.KrakenAdapters;
-import com.xeiam.xchange.service.polling.PollingTradeService;
-import com.xeiam.xchange.service.polling.trade.TradeHistoryParamOffset;
-import com.xeiam.xchange.service.polling.trade.TradeHistoryParams;
-import com.xeiam.xchange.service.polling.trade.TradeHistoryParamsTimeSpan;
-import com.xeiam.xchange.service.polling.trade.DefaultTradeHistoryParamsTimeSpan;
-import si.mazi.rescu.SynchronizedValueFactory;
-
-import java.io.IOException;
-import java.util.Date;
+import com.xeiam.xchange.service.polling.trade.PollingTradeService;
+import com.xeiam.xchange.service.polling.trade.params.DefaultTradeHistoryParamsTimeSpan;
+import com.xeiam.xchange.service.polling.trade.params.TradeHistoryParamOffset;
+import com.xeiam.xchange.service.polling.trade.params.TradeHistoryParams;
+import com.xeiam.xchange.service.polling.trade.params.TradeHistoryParamsTimeSpan;
 
 public class KrakenTradeService extends KrakenTradeServiceRaw implements PollingTradeService {
 
-  public KrakenTradeService(ExchangeSpecification exchangeSpecification, SynchronizedValueFactory<Long> nonceFactory) {
+  /**
+   * Constructor
+   *
+   * @param exchange
+   * @param nonceFactory
+   */
+  public KrakenTradeService(Exchange exchange, SynchronizedValueFactory<Long> nonceFactory) {
 
-    super(exchangeSpecification, nonceFactory);
+    super(exchange, nonceFactory);
   }
 
   @Override
@@ -55,8 +62,7 @@ public class KrakenTradeService extends KrakenTradeServiceRaw implements Polling
   }
 
   /**
-   * Required parameters
-   * {@link TradeHistoryParamsTimeSpan}
+   * Required parameters {@link TradeHistoryParamsTimeSpan}
    * {@link TradeHistoryParamOffset}
    */
   @Override
@@ -69,7 +75,7 @@ public class KrakenTradeService extends KrakenTradeServiceRaw implements Polling
   }
 
   @Override
-  public com.xeiam.xchange.service.polling.trade.TradeHistoryParams createTradeHistoryParams() {
+  public com.xeiam.xchange.service.polling.trade.params.TradeHistoryParams createTradeHistoryParams() {
 
     return new KrakenTradeHistoryParams();
   }

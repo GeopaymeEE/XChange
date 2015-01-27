@@ -5,24 +5,25 @@ import java.math.BigDecimal;
 
 import si.mazi.rescu.SynchronizedValueFactory;
 
-import com.xeiam.xchange.ExchangeException;
-import com.xeiam.xchange.ExchangeSpecification;
-import com.xeiam.xchange.NotAvailableFromExchangeException;
-import com.xeiam.xchange.NotYetImplementedForExchangeException;
+import com.xeiam.xchange.Exchange;
 import com.xeiam.xchange.dto.account.AccountInfo;
+import com.xeiam.xchange.exceptions.ExchangeException;
+import com.xeiam.xchange.exceptions.NotAvailableFromExchangeException;
+import com.xeiam.xchange.exceptions.NotYetImplementedForExchangeException;
 import com.xeiam.xchange.itbit.v1.ItBitAdapters;
-import com.xeiam.xchange.service.polling.PollingAccountService;
+import com.xeiam.xchange.service.polling.account.PollingAccountService;
 
 public class ItBitAccountService extends ItBitAccountServiceRaw implements PollingAccountService {
 
   /**
    * Constructor
-   * 
-   * @param exchangeSpecification The {@link ExchangeSpecification}
+   *
+   * @param exchange
+   * @param nonceFactory
    */
-  public ItBitAccountService(ExchangeSpecification exchangeSpecification, SynchronizedValueFactory<Long> nonceFactory) {
+  public ItBitAccountService(Exchange exchange, SynchronizedValueFactory<Long> nonceFactory) {
 
-    super(exchangeSpecification, nonceFactory);
+    super(exchange, nonceFactory);
   }
 
   @Override

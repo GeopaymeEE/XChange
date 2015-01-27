@@ -3,8 +3,7 @@ package com.xeiam.xchange.bleutrade.service.polling;
 import java.io.IOException;
 import java.util.List;
 
-import com.xeiam.xchange.ExchangeException;
-import com.xeiam.xchange.ExchangeSpecification;
+import com.xeiam.xchange.Exchange;
 import com.xeiam.xchange.bleutrade.Bleutrade;
 import com.xeiam.xchange.bleutrade.BleutradeUtils;
 import com.xeiam.xchange.bleutrade.dto.marketdata.BleutradeMarket;
@@ -16,6 +15,7 @@ import com.xeiam.xchange.bleutrade.dto.marketdata.BleutradeTicker;
 import com.xeiam.xchange.bleutrade.dto.marketdata.BleutradeTickerReturn;
 import com.xeiam.xchange.bleutrade.dto.marketdata.BleutradeTrade;
 import com.xeiam.xchange.currency.CurrencyPair;
+import com.xeiam.xchange.exceptions.ExchangeException;
 
 /**
  * <p>
@@ -29,12 +29,13 @@ public class BleutradeMarketDataServiceRaw extends BleutradeBasePollingService<B
 
   /**
    * Constructor
-   * 
-   * @param exchangeSpecification The {@link ExchangeSpecification}
+   *
+   * @param exchange
    */
-  public BleutradeMarketDataServiceRaw(ExchangeSpecification exchangeSpecification) {
+  public BleutradeMarketDataServiceRaw(Exchange exchange) {
 
-    super(Bleutrade.class, exchangeSpecification);
+    // TODO look at this
+    super(Bleutrade.class, exchange);
   }
 
   public List<BleutradeTicker> getBleutradeTickers() throws IOException {

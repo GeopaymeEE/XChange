@@ -1,24 +1,23 @@
 package com.xeiam.xchange.bitfinex.v1.service.polling;
 
 import java.io.IOException;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import si.mazi.rescu.ParamsDigest;
 import si.mazi.rescu.RestProxyFactory;
 
-import com.xeiam.xchange.ExchangeSpecification;
+import com.xeiam.xchange.Exchange;
 import com.xeiam.xchange.bitfinex.v1.Bitfinex;
 import com.xeiam.xchange.bitfinex.v1.BitfinexAdapters;
-import com.xeiam.xchange.bitfinex.v1.service.BitfinexBaseService;
 import com.xeiam.xchange.bitfinex.v1.service.BitfinexHmacPostBodyDigest;
 import com.xeiam.xchange.bitfinex.v1.service.BitfinexPayloadDigest;
 import com.xeiam.xchange.currency.CurrencyPair;
+import com.xeiam.xchange.service.BaseExchangeService;
 import com.xeiam.xchange.service.polling.BasePollingService;
 
-public class BitfinexBasePollingService<T extends Bitfinex> extends BitfinexBaseService implements BasePollingService {
+public class BitfinexBasePollingService<T extends Bitfinex> extends BaseExchangeService implements BasePollingService {
 
   private static final long START_MILLIS = 1356998400000L; // Jan 1st, 2013 in milliseconds from epoch
   private static final AtomicInteger lastNonce = new AtomicInteger((int) ((System.currentTimeMillis() - START_MILLIS) / 250L));
@@ -27,21 +26,22 @@ public class BitfinexBasePollingService<T extends Bitfinex> extends BitfinexBase
   protected final T bitfinex;
   protected final ParamsDigest signatureCreator;
   protected final ParamsDigest payloadCreator;
-  private final Set<CurrencyPair> currencyPairs;
+  private final List<CurrencyPair> currencyPairs = new ArrayList<CurrencyPair>();;
 
   /**
    * Constructor
-   * 
-   * @param exchangeSpecification The {@link ExchangeSpecification}
+   *
+   * @param type
+   * @param exchange
    */
-  public BitfinexBasePollingService(Class<T> type, ExchangeSpecification exchangeSpecification) {
+  //TODO Look at this TYPE argument
+  public BitfinexBasePollingService(Class<T> type, Exchange exchange) {
 
-    super(exchangeSpecification);
-    this.bitfinex = RestProxyFactory.createProxy(type, exchangeSpecification.getSslUri());
-    this.apiKey = exchangeSpecification.getApiKey();
-    this.signatureCreator = BitfinexHmacPostBodyDigest.createInstance(exchangeSpecification.getSecretKey());
+    super(exchange);
+    this.bitfinex = RestProxyFactory.createProxy(type, exchange.getExchangeSpecification().getSslUri());
+    this.apiKey = exchange.getExchangeSpecification().getApiKey();
+    this.signatureCreator = BitfinexHmacPostBodyDigest.createInstance(exchange.getExchangeSpecification().getSecretKey());
     this.payloadCreator = new BitfinexPayloadDigest();
-    this.currencyPairs = new HashSet<CurrencyPair>();
   }
 
   protected int nextNonce() {
@@ -50,14 +50,12 @@ public class BitfinexBasePollingService<T extends Bitfinex> extends BitfinexBase
   }
 
   @Override
-  public synchronized Collection<CurrencyPair> getExchangeSymbols() throws IOException {
+  public List<CurrencyPair> getExchangeSymbols() throws IOException {
 
-    if (currencyPairs.isEmpty()) {
-      for (String symbol : bitfinex.getSymbols()) {
-        currencyPairs.add(BitfinexAdapters.adaptCurrencyPair(symbol));
-      }
+    List<CurrencyPair> currencyPairs = new ArrayList<CurrencyPair>();
+    for (String symbol : bitfinex.getSymbols()) {
+      currencyPairs.add(BitfinexAdapters.adaptCurrencyPair(symbol));
     }
-
     return currencyPairs;
   }
 }

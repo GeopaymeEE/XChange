@@ -12,15 +12,9 @@ import com.xeiam.xchange.btcchina.service.streaming.BTCChinaStreamingConfigurati
 import com.xeiam.xchange.service.streaming.ExchangeStreamingConfiguration;
 import com.xeiam.xchange.service.streaming.StreamingExchangeService;
 
-/**
- * <p>
- * Exchange implementation to provide the following to applications:
- * </p>
- * <ul>
- * <li>A wrapper for the BTCChina exchange API</li>
- * </ul>
- */
 public class BTCChinaExchange extends BaseExchange implements Exchange {
+
+  // TODO handle these constants. metadata?
 
   public static final String WEBSOCKET_URI_KEY = "websocket.uri";
 
@@ -39,21 +33,14 @@ public class BTCChinaExchange extends BaseExchange implements Exchange {
 
   private final BTCChinaTonceFactory tonceFactory = new BTCChinaTonceFactory();
 
-  /**
-   * Default constructor for ExchangeFactory
-   */
-  public BTCChinaExchange() {
-
-  }
-
   @Override
   public void applySpecification(ExchangeSpecification exchangeSpecification) {
 
     super.applySpecification(exchangeSpecification);
-    this.pollingTradeService = new BTCChinaTradeService(exchangeSpecification, tonceFactory);
-    this.pollingAccountService = new BTCChinaAccountService(exchangeSpecification, tonceFactory);
+    this.pollingTradeService = new BTCChinaTradeService(this, tonceFactory);
+    this.pollingAccountService = new BTCChinaAccountService(this, tonceFactory);
     exchangeSpecification.setSslUri("https://data.btcchina.com");
-    this.pollingMarketDataService = new BTCChinaMarketDataService(exchangeSpecification, tonceFactory);
+    this.pollingMarketDataService = new BTCChinaMarketDataService(this, tonceFactory);
   }
 
   @Override
@@ -76,15 +63,13 @@ public class BTCChinaExchange extends BaseExchange implements Exchange {
 
     if (configuration == null) {
       btcchinaStreamingConfiguration = new BTCChinaStreamingConfiguration();
-    }
-    else if (configuration instanceof BTCChinaStreamingConfiguration) {
+    } else if (configuration instanceof BTCChinaStreamingConfiguration) {
       btcchinaStreamingConfiguration = (BTCChinaStreamingConfiguration) configuration;
-    }
-    else {
+    } else {
       throw new IllegalArgumentException("BTCChina only supports BTCChinaStreamingConfiguration");
     }
 
-    return new BTCChinaSocketIOService(getExchangeSpecification(), btcchinaStreamingConfiguration);
+    return new BTCChinaSocketIOService(this, btcchinaStreamingConfiguration);
   }
 
 }

@@ -7,31 +7,16 @@ import com.xeiam.xchange.bittrex.v1.service.polling.BittrexAccountService;
 import com.xeiam.xchange.bittrex.v1.service.polling.BittrexMarketDataService;
 import com.xeiam.xchange.bittrex.v1.service.polling.BittrexTradeService;
 
-/**
- * <p>
- * Exchange implementation to provide the following to applications:
- * </p>
- * <ul>
- * <li>A wrapper for the Bittrex exchange API</li>
- * </ul>
- */
 public class BittrexExchange extends BaseExchange implements Exchange {
-
-  /**
-   * Default constructor for ExchangeFactory
-   */
-  public BittrexExchange() {
-
-  }
 
   @Override
   public void applySpecification(ExchangeSpecification exchangeSpecification) {
 
     super.applySpecification(exchangeSpecification);
 
-    this.pollingMarketDataService = new BittrexMarketDataService(exchangeSpecification);
-    this.pollingAccountService = new BittrexAccountService(exchangeSpecification);
-    this.pollingTradeService = new BittrexTradeService(exchangeSpecification);
+    this.pollingMarketDataService = new BittrexMarketDataService(this);
+    this.pollingAccountService = new BittrexAccountService(this);
+    this.pollingTradeService = new BittrexTradeService(this);
   }
 
   @Override

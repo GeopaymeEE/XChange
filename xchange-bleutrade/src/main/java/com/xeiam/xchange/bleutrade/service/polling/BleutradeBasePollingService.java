@@ -1,22 +1,23 @@
 package com.xeiam.xchange.bleutrade.service.polling;
 
 import java.io.IOException;
-import java.util.Collection;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import si.mazi.rescu.ParamsDigest;
 import si.mazi.rescu.RestProxyFactory;
 
-import com.xeiam.xchange.ExchangeSpecification;
+import com.xeiam.xchange.Exchange;
 import com.xeiam.xchange.bleutrade.Bleutrade;
 import com.xeiam.xchange.bleutrade.BleutradeAdapters;
 import com.xeiam.xchange.bleutrade.dto.marketdata.BleutradeMarketsReturn;
-import com.xeiam.xchange.bleutrade.service.BleutradeBaseService;
 import com.xeiam.xchange.bleutrade.service.BleutradeDigest;
 import com.xeiam.xchange.currency.CurrencyPair;
+import com.xeiam.xchange.service.BaseExchangeService;
 import com.xeiam.xchange.service.polling.BasePollingService;
 
-public class BleutradeBasePollingService<T extends Bleutrade> extends BleutradeBaseService implements BasePollingService {
+public class BleutradeBasePollingService<T extends Bleutrade> extends BaseExchangeService implements BasePollingService {
 
   private static final long START_MILLIS = 1356998400000L; // Jan 1st, 2013 in milliseconds from epoch
   private static final AtomicInteger lastNonce = new AtomicInteger((int) ((System.currentTimeMillis() - START_MILLIS) / 250L));
@@ -27,15 +28,17 @@ public class BleutradeBasePollingService<T extends Bleutrade> extends BleutradeB
 
   /**
    * Constructor
-   * 
-   * @param exchangeSpecification The {@link ExchangeSpecification}
+   *
+   * @param type
+   * @param exchange
    */
-  public BleutradeBasePollingService(Class<T> type, ExchangeSpecification exchangeSpecification) {
+  public BleutradeBasePollingService(Class<T> type, Exchange exchange) {
 
-    super(exchangeSpecification);
-    this.bleutrade = RestProxyFactory.createProxy(type, exchangeSpecification.getSslUri());
-    this.apiKey = exchangeSpecification.getApiKey();
-    this.signatureCreator = BleutradeDigest.createInstance(exchangeSpecification.getSecretKey());
+    super(exchange);
+
+    this.bleutrade = RestProxyFactory.createProxy(type, exchange.getExchangeSpecification().getSslUri());
+    this.apiKey = exchange.getExchangeSpecification().getApiKey();
+    this.signatureCreator = BleutradeDigest.createInstance(exchange.getExchangeSpecification().getSecretKey());
   }
 
   protected int nextNonce() {
@@ -44,10 +47,10 @@ public class BleutradeBasePollingService<T extends Bleutrade> extends BleutradeB
   }
 
   @Override
-  public synchronized Collection<CurrencyPair> getExchangeSymbols() throws IOException {
+  public List<CurrencyPair> getExchangeSymbols() throws IOException {
 
     BleutradeMarketsReturn response = bleutrade.getBleutradeMarkets();
-    return BleutradeAdapters.adaptBleutradeCurrencyPairs(response);
+    return new ArrayList<CurrencyPair>(BleutradeAdapters.adaptBleutradeCurrencyPairs(response));
   }
 
 }

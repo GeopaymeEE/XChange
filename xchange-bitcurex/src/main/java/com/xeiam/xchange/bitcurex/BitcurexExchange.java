@@ -5,28 +5,13 @@ import com.xeiam.xchange.Exchange;
 import com.xeiam.xchange.ExchangeSpecification;
 import com.xeiam.xchange.bitcurex.service.polling.BitcurexMarketDataService;
 
-/**
- * <p>
- * Exchange implementation to provide the following to applications:
- * </p>
- * <ul>
- * <li>A wrapper for the Bitcurex exchange API</li>
- * </ul>
- */
 public class BitcurexExchange extends BaseExchange implements Exchange {
-
-  /**
-   * Default constructor for ExchangeFactory
-   */
-  public BitcurexExchange() {
-
-  }
 
   @Override
   public void applySpecification(ExchangeSpecification exchangeSpecification) {
 
     super.applySpecification(exchangeSpecification);
-    this.pollingMarketDataService = new BitcurexMarketDataService(exchangeSpecification);
+    this.pollingMarketDataService = new BitcurexMarketDataService(this);
   }
 
   @Override

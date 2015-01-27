@@ -4,11 +4,11 @@ import com.xeiam.xchange.Exchange;
 import com.xeiam.xchange.ExchangeFactory;
 import com.xeiam.xchange.bitcointoyou.BitcoinToYouExchange;
 import com.xeiam.xchange.bitcointoyou.dto.marketdata.BitcoinToYouTransaction;
-import com.xeiam.xchange.bitcointoyou.service.polling.marketdata.BitcoinToYouMarketDataServiceRaw;
+import com.xeiam.xchange.bitcointoyou.service.polling.BitcoinToYouMarketDataServiceRaw;
 import com.xeiam.xchange.currency.Currencies;
 import com.xeiam.xchange.currency.CurrencyPair;
 import com.xeiam.xchange.dto.marketdata.Trades;
-import com.xeiam.xchange.service.polling.PollingMarketDataService;
+import com.xeiam.xchange.service.polling.marketdata.PollingMarketDataService;
 
 import java.io.IOException;
 import java.util.Date;

@@ -9,21 +9,14 @@ import com.xeiam.xchange.bleutrade.service.polling.BleutradeTradeService;
 
 public class BleutradeExchange extends BaseExchange implements Exchange {
 
-  /**
-   * Default constructor for ExchangeFactory
-   */
-  public BleutradeExchange() {
-
-  }
-
   @Override
   public void applySpecification(ExchangeSpecification exchangeSpecification) {
 
     super.applySpecification(exchangeSpecification);
 
-    this.pollingMarketDataService = new BleutradeMarketDataService(exchangeSpecification);
-    this.pollingAccountService = new BleutradeAccountService(exchangeSpecification);
-    this.pollingTradeService = new BleutradeTradeService(exchangeSpecification);
+    this.pollingMarketDataService = new BleutradeMarketDataService(this);
+    this.pollingAccountService = new BleutradeAccountService(this);
+    this.pollingTradeService = new BleutradeTradeService(this);
   }
 
   @Override

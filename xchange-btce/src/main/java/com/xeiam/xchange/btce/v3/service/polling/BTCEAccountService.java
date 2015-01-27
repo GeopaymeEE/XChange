@@ -3,13 +3,14 @@ package com.xeiam.xchange.btce.v3.service.polling;
 import java.io.IOException;
 import java.math.BigDecimal;
 
-import com.xeiam.xchange.ExchangeSpecification;
-import com.xeiam.xchange.NotAvailableFromExchangeException;
+import si.mazi.rescu.SynchronizedValueFactory;
+
+import com.xeiam.xchange.Exchange;
 import com.xeiam.xchange.btce.v3.BTCEAdapters;
 import com.xeiam.xchange.btce.v3.dto.account.BTCEAccountInfo;
 import com.xeiam.xchange.dto.account.AccountInfo;
-import com.xeiam.xchange.service.polling.PollingAccountService;
-import si.mazi.rescu.SynchronizedValueFactory;
+import com.xeiam.xchange.exceptions.NotAvailableFromExchangeException;
+import com.xeiam.xchange.service.polling.account.PollingAccountService;
 
 /**
  * @author Matija Mazi
@@ -18,12 +19,13 @@ public class BTCEAccountService extends BTCEAccountServiceRaw implements Polling
 
   /**
    * Constructor
-   * 
-   * @param exchangeSpecification The {@link ExchangeSpecification}
+   *
+   * @param exchange
+   * @param nonceFactory
    */
-  public BTCEAccountService(ExchangeSpecification exchangeSpecification, SynchronizedValueFactory<Integer> nonceFactory) {
+  public BTCEAccountService(Exchange exchange, SynchronizedValueFactory<Integer> nonceFactory) {
 
-    super(exchangeSpecification, nonceFactory);
+    super(exchange, nonceFactory);
   }
 
   @Override
@@ -44,4 +46,5 @@ public class BTCEAccountService extends BTCEAccountServiceRaw implements Polling
 
     throw new NotAvailableFromExchangeException();
   }
+
 }

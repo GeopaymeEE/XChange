@@ -3,10 +3,7 @@ package com.xeiam.xchange.btce.v2.service.polling;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import com.xeiam.xchange.ExchangeException;
-import com.xeiam.xchange.ExchangeSpecification;
-import com.xeiam.xchange.NotAvailableFromExchangeException;
-import com.xeiam.xchange.NotYetImplementedForExchangeException;
+import com.xeiam.xchange.Exchange;
 import com.xeiam.xchange.btce.v2.BTCEAdapters;
 import com.xeiam.xchange.btce.v2.BTCEAuthenticated;
 import com.xeiam.xchange.btce.v2.dto.trade.BTCECancelOrderReturn;
@@ -19,8 +16,10 @@ import com.xeiam.xchange.dto.trade.LimitOrder;
 import com.xeiam.xchange.dto.trade.MarketOrder;
 import com.xeiam.xchange.dto.trade.OpenOrders;
 import com.xeiam.xchange.dto.trade.UserTrades;
-import com.xeiam.xchange.service.polling.PollingTradeService;
-import com.xeiam.xchange.service.polling.trade.TradeHistoryParams;
+import com.xeiam.xchange.exceptions.NotAvailableFromExchangeException;
+import com.xeiam.xchange.exceptions.NotYetImplementedForExchangeException;
+import com.xeiam.xchange.service.polling.trade.PollingTradeService;
+import com.xeiam.xchange.service.polling.trade.params.TradeHistoryParams;
 
 /** @author Matija Mazi */
 @Deprecated
@@ -28,13 +27,12 @@ public class BTCETradeService extends BTCEBasePollingService implements PollingT
 
   /**
    * Constructor
-   * 
-   * @param exchangeSpecification
-   *          The {@link ExchangeSpecification}
+   *
+   * @param exchange
    */
-  public BTCETradeService(ExchangeSpecification exchangeSpecification) {
+  public BTCETradeService(Exchange exchange) {
 
-    super(exchangeSpecification);
+    super(exchange);
   }
 
   @Override
@@ -73,7 +71,7 @@ public class BTCETradeService extends BTCEBasePollingService implements PollingT
   }
 
   @Override
-  public UserTrades getTradeHistory(final Object... arguments) throws IOException {
+  public UserTrades getTradeHistory(Object... arguments) throws IOException {
 
     Long numberOfTransactions = Long.MAX_VALUE;
     String tradableIdentifier = "";
@@ -93,15 +91,15 @@ public class BTCETradeService extends BTCEBasePollingService implements PollingT
   }
 
   @Override
-  public UserTrades getTradeHistory(TradeHistoryParams params) throws ExchangeException, NotAvailableFromExchangeException, NotYetImplementedForExchangeException, IOException {
+  public UserTrades getTradeHistory(TradeHistoryParams params) throws IOException {
 
     throw new NotYetImplementedForExchangeException();
   }
 
   @Override
-  public com.xeiam.xchange.service.polling.trade.TradeHistoryParams createTradeHistoryParams() {
+  public com.xeiam.xchange.service.polling.trade.params.TradeHistoryParams createTradeHistoryParams() {
 
-    return null;
+    throw new NotYetImplementedForExchangeException();
   }
 
 }

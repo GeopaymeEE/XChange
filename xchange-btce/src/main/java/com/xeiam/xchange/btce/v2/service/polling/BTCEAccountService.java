@@ -3,13 +3,13 @@ package com.xeiam.xchange.btce.v2.service.polling;
 import java.io.IOException;
 import java.math.BigDecimal;
 
-import com.xeiam.xchange.ExchangeSpecification;
-import com.xeiam.xchange.NotAvailableFromExchangeException;
+import com.xeiam.xchange.Exchange;
 import com.xeiam.xchange.btce.v2.BTCEAdapters;
 import com.xeiam.xchange.btce.v2.BTCEAuthenticated;
 import com.xeiam.xchange.btce.v2.dto.account.BTCEAccountInfoReturn;
 import com.xeiam.xchange.dto.account.AccountInfo;
-import com.xeiam.xchange.service.polling.PollingAccountService;
+import com.xeiam.xchange.exceptions.NotAvailableFromExchangeException;
+import com.xeiam.xchange.service.polling.account.PollingAccountService;
 
 /**
  * @author Matija Mazi
@@ -19,12 +19,12 @@ public class BTCEAccountService extends BTCEBasePollingService implements Pollin
 
   /**
    * Constructor
-   * 
-   * @param exchangeSpecification The {@link ExchangeSpecification}
+   *
+   * @param exchange
    */
-  public BTCEAccountService(ExchangeSpecification exchangeSpecification) {
+  public BTCEAccountService(Exchange exchange) {
 
-    super(exchangeSpecification);
+    super(exchange);
   }
 
   @Override

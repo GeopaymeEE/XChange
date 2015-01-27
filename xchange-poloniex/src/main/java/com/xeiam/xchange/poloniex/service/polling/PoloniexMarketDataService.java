@@ -2,19 +2,19 @@ package com.xeiam.xchange.poloniex.service.polling;
 
 import java.io.IOException;
 
-import com.xeiam.xchange.ExchangeException;
-import com.xeiam.xchange.ExchangeSpecification;
-import com.xeiam.xchange.NotAvailableFromExchangeException;
-import com.xeiam.xchange.NotYetImplementedForExchangeException;
+import com.xeiam.xchange.Exchange;
 import com.xeiam.xchange.currency.CurrencyPair;
 import com.xeiam.xchange.dto.marketdata.OrderBook;
 import com.xeiam.xchange.dto.marketdata.Ticker;
 import com.xeiam.xchange.dto.marketdata.Trades;
+import com.xeiam.xchange.exceptions.ExchangeException;
+import com.xeiam.xchange.exceptions.NotAvailableFromExchangeException;
+import com.xeiam.xchange.exceptions.NotYetImplementedForExchangeException;
 import com.xeiam.xchange.poloniex.PoloniexAdapters;
 import com.xeiam.xchange.poloniex.dto.marketdata.PoloniexDepth;
 import com.xeiam.xchange.poloniex.dto.marketdata.PoloniexPublicTrade;
 import com.xeiam.xchange.poloniex.dto.marketdata.PoloniexTicker;
-import com.xeiam.xchange.service.polling.PollingMarketDataService;
+import com.xeiam.xchange.service.polling.marketdata.PollingMarketDataService;
 
 /**
  * @author Zach Holmes
@@ -22,9 +22,14 @@ import com.xeiam.xchange.service.polling.PollingMarketDataService;
 
 public class PoloniexMarketDataService extends PoloniexMarketDataServiceRaw implements PollingMarketDataService {
 
-  public PoloniexMarketDataService(ExchangeSpecification exchangeSpecification) {
+  /**
+   * Constructor
+   *
+   * @param exchange
+   */
+  public PoloniexMarketDataService(Exchange exchange) {
 
-    super(exchangeSpecification);
+    super(exchange);
   }
 
   @Override
@@ -44,8 +49,7 @@ public class PoloniexMarketDataService extends PoloniexMarketDataServiceRaw impl
       if (args[0] instanceof Integer) {
         int depthLimit = (Integer) args[0];
         depth = getPoloniexDepth(currencyPair, depthLimit);
-      }
-      else {
+      } else {
         throw new ExchangeException("Orderbook size argument must be an Integer!");
       }
     }
@@ -77,8 +81,7 @@ public class PoloniexMarketDataService extends PoloniexMarketDataServiceRaw impl
     PoloniexPublicTrade[] poloniexPublicTrades = null;
     if (startTime == null && endTime == null) {
       poloniexPublicTrades = getPoloniexPublicTrades(currencyPair);
-    }
-    else {
+    } else {
       poloniexPublicTrades = getPoloniexPublicTrades(currencyPair, startTime, endTime);
     }
     Trades trades = PoloniexAdapters.adaptPoloniexPublicTrades(poloniexPublicTrades, currencyPair);

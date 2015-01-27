@@ -4,17 +4,17 @@ import java.io.IOException;
 
 import si.mazi.rescu.SynchronizedValueFactory;
 
-import com.xeiam.xchange.ExchangeException;
-import com.xeiam.xchange.ExchangeSpecification;
-import com.xeiam.xchange.NotAvailableFromExchangeException;
-import com.xeiam.xchange.NotYetImplementedForExchangeException;
+import com.xeiam.xchange.Exchange;
 import com.xeiam.xchange.currency.CurrencyPair;
 import com.xeiam.xchange.dto.marketdata.OrderBook;
 import com.xeiam.xchange.dto.marketdata.Ticker;
 import com.xeiam.xchange.dto.marketdata.Trades;
+import com.xeiam.xchange.exceptions.ExchangeException;
+import com.xeiam.xchange.exceptions.NotAvailableFromExchangeException;
+import com.xeiam.xchange.exceptions.NotYetImplementedForExchangeException;
 import com.xeiam.xchange.hitbtc.HitbtcAdapters;
 import com.xeiam.xchange.hitbtc.dto.marketdata.HitbtcTrades.HitbtcTradesSortOrder;
-import com.xeiam.xchange.service.polling.PollingMarketDataService;
+import com.xeiam.xchange.service.polling.marketdata.PollingMarketDataService;
 
 /**
  * @author kpysniak
@@ -22,13 +22,14 @@ import com.xeiam.xchange.service.polling.PollingMarketDataService;
 public class HitbtcMarketDataService extends HitbtcMarketDataServiceRaw implements PollingMarketDataService {
 
   /**
-   * Constructor Initialize common properties from the exchange specification
-   * 
-   * @param exchangeSpecification The {@link com.xeiam.xchange.ExchangeSpecification}
+   * Constructor
+   *
+   * @param exchange
+   * @param nonceFactory
    */
-  public HitbtcMarketDataService(ExchangeSpecification exchangeSpecification, SynchronizedValueFactory<Long> nonceFactory) {
+  public HitbtcMarketDataService(Exchange exchange, SynchronizedValueFactory<Long> nonceFactory) {
 
-    super(exchangeSpecification, nonceFactory);
+    super(exchange, nonceFactory);
   }
 
   @Override

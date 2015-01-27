@@ -68,8 +68,10 @@ public final class BTCChinaAdapters {
 
   /**
    * Adapts a List of btcchinaOrders to a List of LimitOrders
-   * 
-   * @deprecated Use {@link #adaptOrders(BigDecimal[][], CurrencyPair, OrderType)} instead.
+   *
+   * @deprecated Use
+   *             {@link #adaptOrders(BigDecimal[][], CurrencyPair, OrderType)}
+   *             instead.
    */
   @Deprecated
   public static List<LimitOrder> adaptOrders(List<BigDecimal[]> btcchinaOrders, CurrencyPair currencyPair, OrderType orderType) {
@@ -88,7 +90,7 @@ public final class BTCChinaAdapters {
 
   /**
    * Adapts a BTCChinaTrade to a Trade Object
-   * 
+   *
    * @param btcChinaTrade A BTCChina trade
    * @return The XChange Trade
    */
@@ -110,7 +112,7 @@ public final class BTCChinaAdapters {
 
   /**
    * Adapts a BTCChinaTrade[] to a Trades Object.
-   * 
+   *
    * @param btcchinaTrades The BTCChina trade data
    * @return The trades
    */
@@ -120,8 +122,9 @@ public final class BTCChinaAdapters {
     long latestTradeId = 0;
     for (BTCChinaTrade btcchinaTrade : btcchinaTrades) {
       long tradeId = btcchinaTrade.getTid();
-      if (tradeId > latestTradeId)
+      if (tradeId > latestTradeId) {
         latestTradeId = tradeId;
+      }
       tradesList.add(adaptTrade(btcchinaTrade, currencyPair));
     }
     return new Trades(tradesList, latestTradeId, TradeSortType.SortByID);
@@ -164,46 +167,32 @@ public final class BTCChinaAdapters {
   public static AccountInfo adaptAccountInfo(BTCChinaResponse<BTCChinaAccountInfo> response) {
 
     BTCChinaAccountInfo result = response.getResult();
-    return new AccountInfo(result.getProfile().getUsername(), result.getProfile().getTradeFee(), BTCChinaAdapters.adaptWallets(result.getBalances(), result.getFrozens()));
+    return new AccountInfo(result.getProfile().getUsername(), BTCChinaAdapters.adaptWallets(result.getBalances(), result.getFrozens(), result.getLoans()));
   }
 
-  public static List<Wallet> adaptWallets(Map<String, BTCChinaValue> balances, Map<String, BTCChinaValue> frozens) {
+  public static List<Wallet> adaptWallets(Map<String, BTCChinaValue> balances, Map<String, BTCChinaValue> frozens, Map<String, BTCChinaValue> loans) {
 
     List<Wallet> wallets = new ArrayList<Wallet>(balances.size());
 
     for (Map.Entry<String, BTCChinaValue> entry : balances.entrySet()) {
-      Wallet wallet;
       BTCChinaValue frozen = frozens.get(entry.getKey());
-      if (frozen != null) {
-        wallet = adaptWallet(entry.getValue(), frozen);
-        if (wallet != null) {
-          wallets.add(wallet);
-        }
-      }
+      BTCChinaValue loan = loans.get(entry.getKey());
+
+      BigDecimal balanceAmount = BTCChinaUtils.valueToBigDecimal(entry.getValue());
+      BigDecimal frozenAmount = frozen == null ? BigDecimal.ZERO : BTCChinaUtils.valueToBigDecimal(frozen);
+      BigDecimal loanAmount = loan == null ? BigDecimal.ZERO : BTCChinaUtils.valueToBigDecimal(loan);
+
+      // add frozen amount, subtract loaned amount
+      BigDecimal cash = balanceAmount.add(frozenAmount).subtract(loanAmount);
+      wallets.add(new Wallet(entry.getValue().getCurrency(), cash));
     }
     return wallets;
 
   }
 
   /**
-   * Adapts BTCChinaValue balance, BTCChinaValue frozen to wallet
-   */
-  public static Wallet adaptWallet(BTCChinaValue balance, BTCChinaValue frozen) {
-
-    if (balance != null && frozen != null) {
-      BigDecimal balanceAmount = BTCChinaUtils.valueToBigDecimal(balance);
-      BigDecimal frozenAmount = BTCChinaUtils.valueToBigDecimal(frozen);
-      BigDecimal cash = balanceAmount.add(frozenAmount);
-      return new Wallet(balance.getCurrency(), cash);
-    }
-    else {
-      return null;
-    }
-  }
-
-  /**
    * Adapts {@link BTCChinaDepth} to {@link OrderBook}.
-   * 
+   *
    * @param btcChinaDepth {@link BTCChinaDepth}
    * @param currencyPair the currency pair of the depth.
    * @return {@link OrderBook}
@@ -275,7 +264,8 @@ public final class BTCChinaAdapters {
   }
 
   /**
-   * @deprecated Use {@link #adaptOrders(BTCChinaOrder[], CurrencyPair)} instead.
+   * @deprecated Use {@link #adaptOrders(BTCChinaOrder[], CurrencyPair)}
+   *             instead.
    */
   @Deprecated
   public static List<LimitOrder> adaptOrders(List<BTCChinaOrder> orders, CurrencyPair currencyPair) {
@@ -302,8 +292,9 @@ public final class BTCChinaAdapters {
 
   /**
    * Adapts BTCChinaOrder to LimitOrder.
-   * 
-   * @deprecated Use {@link #adaptLimitOrder(BTCChinaOrder, CurrencyPair)} instead.
+   *
+   * @deprecated Use {@link #adaptLimitOrder(BTCChinaOrder, CurrencyPair)}
+   *             instead.
    */
   @Deprecated
   public static LimitOrder adaptLimitOrder(BTCChinaOrder order) {
@@ -325,7 +316,7 @@ public final class BTCChinaAdapters {
     return new LimitOrder(orderType, amount, currencyPair, id, date, price);
   }
 
-  public static UserTrade adaptTransaction(final BTCChinaTransaction transaction) {
+  public static UserTrade adaptTransaction(BTCChinaTransaction transaction) {
 
     final String type = transaction.getType();
 
@@ -345,18 +336,15 @@ public final class BTCChinaAdapters {
       amount = transaction.getBtcAmount().abs();
       money = transaction.getCnyAmount().abs();
       scale = BTCChinaExchange.CNY_SCALE;
-    }
-    else if (currencyPair.equals(CurrencyPair.LTC_CNY)) {
+    } else if (currencyPair.equals(CurrencyPair.LTC_CNY)) {
       amount = transaction.getLtcAmount().abs();
       money = transaction.getCnyAmount().abs();
       scale = BTCChinaExchange.CNY_SCALE;
-    }
-    else if (currencyPair.equals(CurrencyPair.LTC_BTC)) {
+    } else if (currencyPair.equals(CurrencyPair.LTC_BTC)) {
       amount = transaction.getLtcAmount().abs();
       money = transaction.getBtcAmount().abs();
       scale = BTCChinaExchange.BTC_SCALE;
-    }
-    else {
+    } else {
       throw new IllegalArgumentException("Unknown currency pair: " + currencyPair);
     }
 
@@ -411,7 +399,7 @@ public final class BTCChinaAdapters {
 
   public static OrderType adaptOrderType(String type) {
 
-    return type.equals("bid") ? OrderType.BID : OrderType.ASK;
+    return type.equals("buy") ? OrderType.BID : OrderType.ASK;
   }
 
   public static BTCChinaOrderStatus adaptOrderStatus(String status) {

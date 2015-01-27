@@ -3,8 +3,7 @@ package com.xeiam.xchange.bittrex.v1.service.polling;
 import java.io.IOException;
 import java.util.List;
 
-import com.xeiam.xchange.ExchangeException;
-import com.xeiam.xchange.ExchangeSpecification;
+import com.xeiam.xchange.Exchange;
 import com.xeiam.xchange.bittrex.v1.BittrexAuthenticated;
 import com.xeiam.xchange.bittrex.v1.BittrexUtils;
 import com.xeiam.xchange.bittrex.v1.dto.trade.BittrexCancelOrderResponse;
@@ -16,17 +15,18 @@ import com.xeiam.xchange.bittrex.v1.dto.trade.BittrexUserTrade;
 import com.xeiam.xchange.dto.Order.OrderType;
 import com.xeiam.xchange.dto.trade.LimitOrder;
 import com.xeiam.xchange.dto.trade.MarketOrder;
+import com.xeiam.xchange.exceptions.ExchangeException;
 
 public class BittrexTradeServiceRaw extends BittrexBasePollingService<BittrexAuthenticated> {
 
   /**
    * Constructor
-   * 
-   * @param exchangeSpecification
+   *
+   * @param exchange
    */
-  public BittrexTradeServiceRaw(ExchangeSpecification exchangeSpecification) {
+  public BittrexTradeServiceRaw(Exchange exchange) {
 
-    super(BittrexAuthenticated.class, exchangeSpecification);
+    super(BittrexAuthenticated.class, exchange);
   }
 
   public String placeBittrexMarketOrder(MarketOrder marketOrder) throws IOException {
@@ -39,20 +39,17 @@ public class BittrexTradeServiceRaw extends BittrexBasePollingService<BittrexAut
 
       if (response.getSuccess()) {
         return response.getResult().getUuid();
-      }
-      else {
+      } else {
         throw new ExchangeException(response.getMessage());
       }
 
-    }
-    else {
+    } else {
 
       BittrexTradeResponse response = bittrex.sellmarket(apiKey, signatureCreator, String.valueOf(nextNonce()), pair, marketOrder.getTradableAmount().toPlainString());
 
       if (response.getSuccess()) {
         return response.getResult().getUuid();
-      }
-      else {
+      } else {
         throw new ExchangeException(response.getMessage());
       }
 
@@ -64,25 +61,22 @@ public class BittrexTradeServiceRaw extends BittrexBasePollingService<BittrexAut
     String pair = BittrexUtils.toPairString(limitOrder.getCurrencyPair());
 
     if (limitOrder.getType() == OrderType.BID) {
-      BittrexTradeResponse response =
-          bittrex.buylimit(apiKey, signatureCreator, String.valueOf(nextNonce()), pair, limitOrder.getTradableAmount().toPlainString(), limitOrder.getLimitPrice().toPlainString());
+      BittrexTradeResponse response = bittrex.buylimit(apiKey, signatureCreator, String.valueOf(nextNonce()), pair, limitOrder.getTradableAmount().toPlainString(), limitOrder.getLimitPrice()
+          .toPlainString());
 
       if (response.getSuccess()) {
         return response.getResult().getUuid();
-      }
-      else {
+      } else {
         throw new ExchangeException(response.getMessage());
       }
 
-    }
-    else {
-      BittrexTradeResponse response =
-          bittrex.selllimit(apiKey, signatureCreator, String.valueOf(nextNonce()), pair, limitOrder.getTradableAmount().toPlainString(), limitOrder.getLimitPrice().toPlainString());
+    } else {
+      BittrexTradeResponse response = bittrex.selllimit(apiKey, signatureCreator, String.valueOf(nextNonce()), pair, limitOrder.getTradableAmount().toPlainString(), limitOrder.getLimitPrice()
+          .toPlainString());
 
       if (response.getSuccess()) {
         return response.getResult().getUuid();
-      }
-      else {
+      } else {
         throw new ExchangeException(response.getMessage());
       }
     }
@@ -94,8 +88,7 @@ public class BittrexTradeServiceRaw extends BittrexBasePollingService<BittrexAut
 
     if (response.getSuccess()) {
       return true;
-    }
-    else {
+    } else {
       throw new ExchangeException(response.getMessage());
     }
 
@@ -107,8 +100,7 @@ public class BittrexTradeServiceRaw extends BittrexBasePollingService<BittrexAut
 
     if (response.getSuccess()) {
       return response.getBittrexOpenOrders();
-    }
-    else {
+    } else {
       throw new ExchangeException(response.getMessage());
     }
 
@@ -120,8 +112,7 @@ public class BittrexTradeServiceRaw extends BittrexBasePollingService<BittrexAut
 
     if (response.getSuccess()) {
       return response.getResult();
-    }
-    else {
+    } else {
       throw new ExchangeException(response.getMessage());
     }
   }

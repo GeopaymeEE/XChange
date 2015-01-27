@@ -3,13 +3,13 @@ package com.xeiam.xchange.examples.bitcointoyou.trade;
 import com.xeiam.xchange.Exchange;
 import com.xeiam.xchange.bitcointoyou.dto.BitcoinToYouBaseTradeApiResult;
 import com.xeiam.xchange.bitcointoyou.dto.trade.BitcoinToYouOrder;
-import com.xeiam.xchange.bitcointoyou.service.polling.trade.BitcoinToYouTradeServiceRaw;
+import com.xeiam.xchange.bitcointoyou.service.polling.BitcoinToYouTradeServiceRaw;
 import com.xeiam.xchange.currency.Currencies;
 import com.xeiam.xchange.currency.CurrencyPair;
 import com.xeiam.xchange.dto.Order;
 import com.xeiam.xchange.dto.trade.LimitOrder;
 import com.xeiam.xchange.dto.trade.OpenOrders;
-import com.xeiam.xchange.service.polling.PollingTradeService;
+import com.xeiam.xchange.service.polling.trade.PollingTradeService;
 
 import java.io.IOException;
 import java.math.BigDecimal;

@@ -1,18 +1,17 @@
 package com.xeiam.xchange.vircurex.service.polling;
 
 import java.io.IOException;
-import java.util.Date;
 import java.util.List;
 
-import com.xeiam.xchange.ExchangeSpecification;
-import com.xeiam.xchange.NotAvailableFromExchangeException;
-import com.xeiam.xchange.NotYetImplementedForExchangeException;
+import com.xeiam.xchange.Exchange;
 import com.xeiam.xchange.currency.CurrencyPair;
 import com.xeiam.xchange.dto.marketdata.OrderBook;
 import com.xeiam.xchange.dto.marketdata.Ticker;
 import com.xeiam.xchange.dto.marketdata.Trades;
 import com.xeiam.xchange.dto.trade.LimitOrder;
-import com.xeiam.xchange.service.polling.PollingMarketDataService;
+import com.xeiam.xchange.exceptions.NotAvailableFromExchangeException;
+import com.xeiam.xchange.exceptions.NotYetImplementedForExchangeException;
+import com.xeiam.xchange.service.polling.marketdata.PollingMarketDataService;
 import com.xeiam.xchange.vircurex.VircurexAdapters;
 import com.xeiam.xchange.vircurex.dto.marketdata.VircurexDepth;
 
@@ -28,12 +27,12 @@ public class VircurexMarketDataService extends VircurexMarketDataServiceRaw impl
 
   /**
    * Constructor
-   * 
-   * @param exchangeSpecification
+   *
+   * @param exchange
    */
-  public VircurexMarketDataService(ExchangeSpecification exchangeSpecification) {
+  public VircurexMarketDataService(Exchange exchange) {
 
-    super(exchangeSpecification);
+    super(exchange);
   }
 
   @Override
@@ -51,7 +50,7 @@ public class VircurexMarketDataService extends VircurexMarketDataServiceRaw impl
     List<LimitOrder> asks = VircurexAdapters.adaptOrders(vircurexDepth.getAsks(), currencyPair, "ask", "");
     List<LimitOrder> bids = VircurexAdapters.adaptOrders(vircurexDepth.getBids(), currencyPair, "bid", "");
 
-    return new OrderBook(new Date(), asks, bids);
+    return new OrderBook(null, asks, bids);
   }
 
   @Override

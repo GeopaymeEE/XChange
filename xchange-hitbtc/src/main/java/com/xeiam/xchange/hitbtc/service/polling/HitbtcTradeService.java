@@ -2,30 +2,39 @@ package com.xeiam.xchange.hitbtc.service.polling;
 
 import java.io.IOException;
 
-import com.xeiam.xchange.currency.CurrencyPair;
-import com.xeiam.xchange.service.polling.trade.*;
 import si.mazi.rescu.SynchronizedValueFactory;
 
-import com.xeiam.xchange.ExchangeException;
-import com.xeiam.xchange.ExchangeSpecification;
-import com.xeiam.xchange.NotAvailableFromExchangeException;
-import com.xeiam.xchange.NotYetImplementedForExchangeException;
+import com.xeiam.xchange.Exchange;
+import com.xeiam.xchange.currency.CurrencyPair;
 import com.xeiam.xchange.dto.trade.LimitOrder;
 import com.xeiam.xchange.dto.trade.MarketOrder;
 import com.xeiam.xchange.dto.trade.OpenOrders;
 import com.xeiam.xchange.dto.trade.UserTrades;
+import com.xeiam.xchange.exceptions.ExchangeException;
+import com.xeiam.xchange.exceptions.NotAvailableFromExchangeException;
+import com.xeiam.xchange.exceptions.NotYetImplementedForExchangeException;
 import com.xeiam.xchange.hitbtc.HitbtcAdapters;
 import com.xeiam.xchange.hitbtc.dto.trade.HitbtcExecutionReport;
 import com.xeiam.xchange.hitbtc.dto.trade.HitbtcExecutionReportResponse;
 import com.xeiam.xchange.hitbtc.dto.trade.HitbtcOrder;
 import com.xeiam.xchange.hitbtc.dto.trade.HitbtcOwnTrade;
-import com.xeiam.xchange.service.polling.PollingTradeService;
+import com.xeiam.xchange.service.polling.trade.PollingTradeService;
+import com.xeiam.xchange.service.polling.trade.params.DefaultTradeHistoryParamPaging;
+import com.xeiam.xchange.service.polling.trade.params.TradeHistoryParamCurrencyPair;
+import com.xeiam.xchange.service.polling.trade.params.TradeHistoryParamPaging;
+import com.xeiam.xchange.service.polling.trade.params.TradeHistoryParams;
 
 public class HitbtcTradeService extends HitbtcTradeServiceRaw implements PollingTradeService {
 
-  public HitbtcTradeService(ExchangeSpecification exchangeSpecification, SynchronizedValueFactory<Long> nonceFactory) {
+  /**
+   * Constructor
+   *
+   * @param exchange
+   * @param nonceFactory
+   */
+  public HitbtcTradeService(Exchange exchange, SynchronizedValueFactory<Long> nonceFactory) {
 
-    super(exchangeSpecification, nonceFactory);
+    super(exchange, nonceFactory);
   }
 
   @Override
@@ -72,31 +81,32 @@ public class HitbtcTradeService extends HitbtcTradeServiceRaw implements Polling
     }
 
     HitbtcOwnTrade[] tradeHistoryRaw = getTradeHistoryRaw(startIndex, maxResults, symbols);
-    return HitbtcAdapters.adaptTradeHistory(tradeHistoryRaw);
+    return HitbtcAdapters.adaptTradeHistory(tradeHistoryRaw, metadata);
   }
 
   /**
-   * Required parameters:
-   * {@link TradeHistoryParamPaging}
+   * Required parameters: {@link TradeHistoryParamPaging}
    * {@link TradeHistoryParamCurrencyPair}
    */
   @Override
-  public UserTrades getTradeHistory(TradeHistoryParams params) throws ExchangeException, NotAvailableFromExchangeException, NotYetImplementedForExchangeException, IOException {
+  public UserTrades getTradeHistory(TradeHistoryParams params) throws IOException {
 
     TradeHistoryParamPaging pagingParams = (TradeHistoryParamPaging) params;
     Integer count = pagingParams.getPageLength();
-    if (count == null)
+    if (count == null) {
       count = 1000;
+    }
 
     Integer pageNumber = pagingParams.getPageNumber();
     int offset = count * (pageNumber != null ? pageNumber : 0);
 
     CurrencyPair pair = ((TradeHistoryParamCurrencyPair) params).getCurrencyPair();
-    if (pair == null)
+    if (pair == null) {
       pair = CurrencyPair.BTC_USD;
+    }
 
     HitbtcOwnTrade[] tradeHistoryRaw = getTradeHistoryRaw(offset, count, HitbtcAdapters.adaptCurrencyPair(pair));
-    return HitbtcAdapters.adaptTradeHistory(tradeHistoryRaw);
+    return HitbtcAdapters.adaptTradeHistory(tradeHistoryRaw, metadata);
   }
 
   @Override
@@ -132,12 +142,6 @@ public class HitbtcTradeService extends HitbtcTradeServiceRaw implements Polling
     public CurrencyPair getCurrencyPair() {
       return pair;
     }
-  }
-
-  private void checkRejected(HitbtcExecutionReport executionReport) {
-
-    if ("rejected".equals(executionReport.getExecReportType()))
-      throw new ExchangeException("Order rejected, " + executionReport.getOrderRejectReason());
   }
 
 }

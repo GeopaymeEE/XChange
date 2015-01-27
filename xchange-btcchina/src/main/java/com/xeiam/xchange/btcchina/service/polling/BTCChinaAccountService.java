@@ -5,13 +5,13 @@ import java.math.BigDecimal;
 
 import si.mazi.rescu.SynchronizedValueFactory;
 
-import com.xeiam.xchange.ExchangeSpecification;
+import com.xeiam.xchange.Exchange;
 import com.xeiam.xchange.btcchina.BTCChinaAdapters;
 import com.xeiam.xchange.btcchina.dto.BTCChinaID;
 import com.xeiam.xchange.btcchina.dto.BTCChinaResponse;
 import com.xeiam.xchange.btcchina.dto.account.BTCChinaAccountInfo;
 import com.xeiam.xchange.dto.account.AccountInfo;
-import com.xeiam.xchange.service.polling.PollingAccountService;
+import com.xeiam.xchange.service.polling.account.PollingAccountService;
 
 /**
  * Implementation of the account data service for BTCChina.
@@ -25,12 +25,13 @@ public class BTCChinaAccountService extends BTCChinaAccountServiceRaw implements
 
   /**
    * Constructor
-   * 
-   * @param exchangeSpecification The {@link ExchangeSpecification}
+   *
+   * @param exchange
+   * @param tonceFactory
    */
-  public BTCChinaAccountService(ExchangeSpecification exchangeSpecification, SynchronizedValueFactory<Long> tonceFactory) {
+  public BTCChinaAccountService(Exchange exchange, SynchronizedValueFactory<Long> tonceFactory) {
 
-    super(exchangeSpecification, tonceFactory);
+    super(exchange, tonceFactory);
 
   }
 
