@@ -4,8 +4,6 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
-import si.mazi.rescu.SynchronizedValueFactory;
-
 import com.xeiam.xchange.Exchange;
 import com.xeiam.xchange.btcchina.BTCChina;
 import com.xeiam.xchange.btcchina.BTCChinaExchange;
@@ -22,17 +20,16 @@ import com.xeiam.xchange.btcchina.dto.marketdata.BTCChinaTrade;
  *
  * @author ObsessiveOrange
  */
-public class BTCChinaMarketDataServiceRaw extends BTCChinaBasePollingService<BTCChina> {
+public class BTCChinaMarketDataServiceRaw extends BTCChinaBasePollingService {
 
   /**
    * Constructor
    *
    * @param exchange
-   * @param tonceFactory
    */
-  public BTCChinaMarketDataServiceRaw(Exchange exchange, SynchronizedValueFactory<Long> tonceFactory) {
+  public BTCChinaMarketDataServiceRaw(Exchange exchange) {
 
-    super(BTCChina.class, exchange, tonceFactory);
+    super(exchange);
   }
 
   public Map<String, BTCChinaTickerObject> getBTCChinaTickers() throws IOException {

@@ -6,8 +6,6 @@ import java.math.BigInteger;
 import java.util.HashMap;
 import java.util.Map;
 
-import si.mazi.rescu.SynchronizedValueFactory;
-
 import com.xeiam.xchange.Exchange;
 import com.xeiam.xchange.currency.CurrencyPair;
 import com.xeiam.xchange.dto.Order;
@@ -17,7 +15,6 @@ import com.xeiam.xchange.exceptions.ExchangeException;
 import com.xeiam.xchange.exceptions.NotAvailableFromExchangeException;
 import com.xeiam.xchange.exceptions.NotYetImplementedForExchangeException;
 import com.xeiam.xchange.hitbtc.HitbtcAdapters;
-import com.xeiam.xchange.hitbtc.HitbtcAuthenticated;
 import com.xeiam.xchange.hitbtc.dto.HitbtcException;
 import com.xeiam.xchange.hitbtc.dto.marketdata.HitbtcSymbol;
 import com.xeiam.xchange.hitbtc.dto.marketdata.HitbtcSymbols;
@@ -29,7 +26,7 @@ import com.xeiam.xchange.hitbtc.dto.trade.HitbtcOwnTrade;
 import com.xeiam.xchange.hitbtc.dto.trade.HitbtcTradeMetaData;
 import com.xeiam.xchange.hitbtc.dto.trade.HitbtcTradeResponse;
 
-public class HitbtcTradeServiceRaw extends HitbtcBasePollingService<HitbtcAuthenticated> {
+public class HitbtcTradeServiceRaw extends HitbtcBasePollingService {
 
   protected Map<CurrencyPair, HitbtcTradeMetaData> metadata;
 
@@ -37,17 +34,16 @@ public class HitbtcTradeServiceRaw extends HitbtcBasePollingService<HitbtcAuthen
    * Constructor
    *
    * @param exchange
-   * @param nonceFactory
    */
-  public HitbtcTradeServiceRaw(Exchange exchange, SynchronizedValueFactory<Long> nonceFactory) {
+  public HitbtcTradeServiceRaw(Exchange exchange) {
 
-    super(HitbtcAuthenticated.class, exchange, nonceFactory);
+    super(exchange);
   }
 
   public HitbtcOrdersResponse getOpenOrdersRawBaseResponse() throws ExchangeException, NotAvailableFromExchangeException, NotYetImplementedForExchangeException, IOException {
 
     try {
-      HitbtcOrdersResponse hitbtcActiveOrders = hitbtc.getHitbtcActiveOrders(signatureCreator, valueFactory, apiKey);
+      HitbtcOrdersResponse hitbtcActiveOrders = hitbtc.getHitbtcActiveOrders(signatureCreator, exchange.getNonceFactory(), apiKey);
       return hitbtcActiveOrders;
     } catch (HitbtcException e) {
       throw handleException(e);
@@ -63,7 +59,7 @@ public class HitbtcTradeServiceRaw extends HitbtcBasePollingService<HitbtcAuthen
   public HitbtcOrdersResponse getRecentOrdersRawBaseResponse(int max_results) throws ExchangeException, NotAvailableFromExchangeException, NotYetImplementedForExchangeException, IOException {
 
     try {
-      HitbtcOrdersResponse hitbtcActiveOrders = hitbtc.getHitbtcRecentOrders(signatureCreator, valueFactory, apiKey, max_results);
+      HitbtcOrdersResponse hitbtcActiveOrders = hitbtc.getHitbtcRecentOrders(signatureCreator, exchange.getNonceFactory(), apiKey, max_results);
       return hitbtcActiveOrders;
     } catch (HitbtcException e) {
       throw handleException(e);
@@ -77,16 +73,16 @@ public class HitbtcTradeServiceRaw extends HitbtcBasePollingService<HitbtcAuthen
   }
 
   public HitbtcExecutionReportResponse placeMarketOrderRawBaseResponse(MarketOrder marketOrder) throws ExchangeException, NotAvailableFromExchangeException, NotYetImplementedForExchangeException,
-      IOException {
+  IOException {
 
     String symbol = marketOrder.getCurrencyPair().baseSymbol + marketOrder.getCurrencyPair().counterSymbol;
 
-    long nonce = valueFactory.createValue();
+    long nonce = exchange.getNonceFactory().createValue();
     String side = HitbtcAdapters.getSide(marketOrder.getType());
     String orderId = HitbtcAdapters.createOrderId(marketOrder, nonce);
 
     try {
-      HitbtcExecutionReportResponse response = hitbtc.postHitbtcNewOrder(signatureCreator, valueFactory, apiKey, orderId, symbol, side, null, getLots(marketOrder), "market", "IOC");
+      HitbtcExecutionReportResponse response = hitbtc.postHitbtcNewOrder(signatureCreator, exchange.getNonceFactory(), apiKey, orderId, symbol, side, null, getLots(marketOrder), "market", "IOC");
 
       return response;
     } catch (HitbtcException e) {
@@ -111,7 +107,7 @@ public class HitbtcTradeServiceRaw extends HitbtcBasePollingService<HitbtcAuthen
   }
 
   public HitbtcExecutionReportResponse placeLimitOrderRawReturningHitbtcExecutionReportResponse(LimitOrder limitOrder) throws ExchangeException, NotAvailableFromExchangeException,
-      NotYetImplementedForExchangeException, IOException {
+  NotYetImplementedForExchangeException, IOException {
 
     HitbtcExecutionReportResponse postHitbtcNewOrder = fillHitbtcExecutionReportResponse(limitOrder);
     return postHitbtcNewOrder;
@@ -120,12 +116,12 @@ public class HitbtcTradeServiceRaw extends HitbtcBasePollingService<HitbtcAuthen
   private HitbtcExecutionReportResponse fillHitbtcExecutionReportResponse(LimitOrder limitOrder) throws IOException {
 
     String symbol = HitbtcAdapters.adaptCurrencyPair(limitOrder.getCurrencyPair());
-    long nonce = valueFactory.createValue();
+    long nonce = exchange.getNonceFactory().createValue();
     String side = HitbtcAdapters.getSide(limitOrder.getType());
     String orderId = HitbtcAdapters.createOrderId(limitOrder, nonce);
 
     try {
-      return hitbtc.postHitbtcNewOrder(signatureCreator, valueFactory, apiKey, orderId, symbol, side, limitOrder.getLimitPrice(), getLots(limitOrder), "limit", "GTC");
+      return hitbtc.postHitbtcNewOrder(signatureCreator, exchange.getNonceFactory(), apiKey, orderId, symbol, side, limitOrder.getLimitPrice(), getLots(limitOrder), "limit", "GTC");
     } catch (HitbtcException e) {
       throw handleException(e);
     }
@@ -138,27 +134,27 @@ public class HitbtcTradeServiceRaw extends HitbtcBasePollingService<HitbtcAuthen
     String symbol = HitbtcAdapters.readSymbol(orderId);
 
     try {
-      return hitbtc.postHitbtcCancelOrder(signatureCreator, valueFactory, apiKey, orderId, orderId, symbol, originalSide);
+      return hitbtc.postHitbtcCancelOrder(signatureCreator, exchange.getNonceFactory(), apiKey, orderId, orderId, symbol, originalSide);
     } catch (HitbtcException e) {
       throw handleException(e);
     }
   }
 
   public HitbtcExecutionReportResponse cancelOrderRaw(String clientOrderId, String cancelRequestClientOrderId, String symbol, String side) throws ExchangeException, NotAvailableFromExchangeException,
-      NotYetImplementedForExchangeException, IOException {
+  NotYetImplementedForExchangeException, IOException {
 
     try {
-      return hitbtc.postHitbtcCancelOrder(signatureCreator, valueFactory, apiKey, clientOrderId, cancelRequestClientOrderId, symbol, side);
+      return hitbtc.postHitbtcCancelOrder(signatureCreator, exchange.getNonceFactory(), apiKey, clientOrderId, cancelRequestClientOrderId, symbol, side);
     } catch (HitbtcException e) {
       throw handleException(e);
     }
   }
 
   public HitbtcTradeResponse getTradeHistoryRawBaseResponse(int startIndex, int maxResults, String symbols) throws ExchangeException, NotAvailableFromExchangeException,
-      NotYetImplementedForExchangeException, IOException {
+  NotYetImplementedForExchangeException, IOException {
 
     try {
-      HitbtcTradeResponse hitbtcTrades = hitbtc.getHitbtcTrades(signatureCreator, valueFactory, apiKey, "ts", startIndex, maxResults, symbols, "desc", null, null);
+      HitbtcTradeResponse hitbtcTrades = hitbtc.getHitbtcTrades(signatureCreator, exchange.getNonceFactory(), apiKey, "ts", startIndex, maxResults, symbols, "desc", null, null);
       return hitbtcTrades;
     } catch (HitbtcException e) {
       throw handleException(e);
@@ -166,7 +162,7 @@ public class HitbtcTradeServiceRaw extends HitbtcBasePollingService<HitbtcAuthen
   }
 
   public HitbtcOwnTrade[] getTradeHistoryRaw(int startIndex, int maxResults, String symbols) throws ExchangeException, NotAvailableFromExchangeException, NotYetImplementedForExchangeException,
-      IOException {
+  IOException {
 
     HitbtcTradeResponse hitbtcTrades = getTradeHistoryRawBaseResponse(startIndex, maxResults, symbols);
     return hitbtcTrades.getTrades();
@@ -181,7 +177,7 @@ public class HitbtcTradeServiceRaw extends HitbtcBasePollingService<HitbtcAuthen
   protected BigInteger getLots(Order order) {
 
     CurrencyPair pair = order.getCurrencyPair();
-    BigDecimal lotDivisor = metadata.get(pair).getAmountMinimum();
+    BigDecimal lotDivisor = metadata.get(pair).getMinimumAmount();
 
     BigDecimal lots = order.getTradableAmount().divide(lotDivisor, BigDecimal.ROUND_UNNECESSARY);
     if (lots.compareTo(BigDecimal.ONE) < 0) {

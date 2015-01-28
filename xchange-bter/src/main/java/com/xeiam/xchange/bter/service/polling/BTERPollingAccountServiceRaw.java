@@ -3,10 +3,9 @@ package com.xeiam.xchange.bter.service.polling;
 import java.io.IOException;
 
 import com.xeiam.xchange.Exchange;
-import com.xeiam.xchange.bter.BTERAuthenticated;
 import com.xeiam.xchange.bter.dto.account.BTERFunds;
 
-public class BTERPollingAccountServiceRaw extends BTERBasePollingService<BTERAuthenticated> {
+public class BTERPollingAccountServiceRaw extends BTERBasePollingService {
 
   /**
    * Constructor
@@ -15,13 +14,12 @@ public class BTERPollingAccountServiceRaw extends BTERBasePollingService<BTERAut
    */
   public BTERPollingAccountServiceRaw(Exchange exchange) {
 
-    //TODO look at this
-    super(BTERAuthenticated.class, exchange);
+    super(exchange);
   }
 
   public BTERFunds getBTERAccountInfo() throws IOException {
 
-    BTERFunds bterFunds = bter.getFunds(exchange.getExchangeSpecification().getApiKey(), signatureCreator, nextNonce());
+    BTERFunds bterFunds = bter.getFunds(exchange.getExchangeSpecification().getApiKey(), signatureCreator, exchange.getNonceFactory());
     return handleResponse(bterFunds);
   }
 

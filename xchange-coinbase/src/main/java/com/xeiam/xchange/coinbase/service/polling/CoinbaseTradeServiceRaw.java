@@ -4,14 +4,13 @@ import java.io.IOException;
 import java.math.BigDecimal;
 
 import com.xeiam.xchange.Exchange;
-import com.xeiam.xchange.coinbase.CoinbaseAuthenticated;
 import com.xeiam.xchange.coinbase.dto.trade.CoinbaseTransfer;
 import com.xeiam.xchange.coinbase.dto.trade.CoinbaseTransfers;
 
 /**
  * @author jamespedwards42
  */
-class CoinbaseTradeServiceRaw extends CoinbaseBasePollingService<CoinbaseAuthenticated> {
+class CoinbaseTradeServiceRaw extends CoinbaseBasePollingService {
 
   /**
    * Constructor
@@ -20,7 +19,7 @@ class CoinbaseTradeServiceRaw extends CoinbaseBasePollingService<CoinbaseAuthent
    */
   protected CoinbaseTradeServiceRaw(Exchange exchange) {
 
-    super(CoinbaseAuthenticated.class, exchange);
+    super(exchange);
   }
 
   /**
@@ -38,7 +37,7 @@ class CoinbaseTradeServiceRaw extends CoinbaseBasePollingService<CoinbaseAuthent
    */
   public CoinbaseTransfer buy(BigDecimal quantity) throws IOException {
 
-    final CoinbaseTransfer buyTransfer = coinbase.buy(quantity.toPlainString(), false, exchange.getExchangeSpecification().getApiKey(), signatureCreator, getNonce());
+    final CoinbaseTransfer buyTransfer = coinbase.buy(quantity.toPlainString(), false, exchange.getExchangeSpecification().getApiKey(), signatureCreator, exchange.getNonceFactory());
     return handleResponse(buyTransfer);
   }
 
@@ -57,7 +56,7 @@ class CoinbaseTradeServiceRaw extends CoinbaseBasePollingService<CoinbaseAuthent
    */
   public CoinbaseTransfer buyAndAgreeBTCAmountVaries(BigDecimal quantity) throws IOException {
 
-    final CoinbaseTransfer buyTransfer = coinbase.buy(quantity.toPlainString(), true, exchange.getExchangeSpecification().getApiKey(), signatureCreator, getNonce());
+    final CoinbaseTransfer buyTransfer = coinbase.buy(quantity.toPlainString(), true, exchange.getExchangeSpecification().getApiKey(), signatureCreator, exchange.getNonceFactory());
     return handleResponse(buyTransfer);
   }
 
@@ -75,7 +74,7 @@ class CoinbaseTradeServiceRaw extends CoinbaseBasePollingService<CoinbaseAuthent
    */
   public CoinbaseTransfer sell(BigDecimal quantity) throws IOException {
 
-    final CoinbaseTransfer sellTransfer = coinbase.sell(quantity.toPlainString(), exchange.getExchangeSpecification().getApiKey(), signatureCreator, getNonce());
+    final CoinbaseTransfer sellTransfer = coinbase.sell(quantity.toPlainString(), exchange.getExchangeSpecification().getApiKey(), signatureCreator, exchange.getNonceFactory());
     return handleResponse(sellTransfer);
   }
 
@@ -110,7 +109,7 @@ class CoinbaseTradeServiceRaw extends CoinbaseBasePollingService<CoinbaseAuthent
    */
   public CoinbaseTransfers getCoinbaseTransfers(Integer page, final Integer limit) throws IOException {
 
-    final CoinbaseTransfers transfers = coinbase.getTransfers(page, limit, exchange.getExchangeSpecification().getApiKey(), signatureCreator, getNonce());
+    final CoinbaseTransfers transfers = coinbase.getTransfers(page, limit, exchange.getExchangeSpecification().getApiKey(), signatureCreator, exchange.getNonceFactory());
     return transfers;
   }
 }

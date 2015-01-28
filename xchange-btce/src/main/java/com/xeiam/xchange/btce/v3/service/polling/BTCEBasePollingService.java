@@ -6,11 +6,10 @@ import java.util.List;
 
 import si.mazi.rescu.ParamsDigest;
 import si.mazi.rescu.RestProxyFactory;
-import si.mazi.rescu.SynchronizedValueFactory;
 
 import com.xeiam.xchange.Exchange;
-import com.xeiam.xchange.btce.v3.BTCE;
 import com.xeiam.xchange.btce.v3.BTCEAdapters;
+import com.xeiam.xchange.btce.v3.BTCEAuthenticated;
 import com.xeiam.xchange.btce.v3.dto.BTCEReturn;
 import com.xeiam.xchange.btce.v3.service.BTCEHmacPostBodyDigest;
 import com.xeiam.xchange.currency.CurrencyPair;
@@ -20,7 +19,7 @@ import com.xeiam.xchange.exceptions.NonceException;
 import com.xeiam.xchange.service.BaseExchangeService;
 import com.xeiam.xchange.service.polling.BasePollingService;
 
-public class BTCEBasePollingService<T extends BTCE> extends BaseExchangeService implements BasePollingService {
+public class BTCEBasePollingService extends BaseExchangeService implements BasePollingService {
 
   //  protected static final String PREFIX = "btce";
   //  protected static final String KEY_ORDER_SIZE_SCALE_DEFAULT = PREFIX + SUF_ORDER_SIZE_SCALE_DEFAULT;
@@ -28,27 +27,22 @@ public class BTCEBasePollingService<T extends BTCE> extends BaseExchangeService 
   private static final String ERR_MSG_NONCE = "invalid nonce parameter; on key:";
   private static final String ERR_MSG_FUNDS = "It is not enough ";
 
-  private SynchronizedValueFactory<Integer> nonceFactory;
-
   protected final String apiKey;
-  protected final T btce;
+  protected final BTCEAuthenticated btce;
   protected final ParamsDigest signatureCreator;
 
   /**
    * Constructor
    *
-   * @param btceType
    * @param exchange
-   * @param nonceFactory
    */
-  public BTCEBasePollingService(Class<T> btceType, Exchange exchange, SynchronizedValueFactory<Integer> nonceFactory) {
+  public BTCEBasePollingService(Exchange exchange) {
 
     super(exchange);
 
-    this.btce = RestProxyFactory.createProxy(btceType, exchange.getExchangeSpecification().getSslUri());
+    this.btce = RestProxyFactory.createProxy(BTCEAuthenticated.class, exchange.getExchangeSpecification().getSslUri());
     this.apiKey = exchange.getExchangeSpecification().getApiKey();
     this.signatureCreator = BTCEHmacPostBodyDigest.createInstance(exchange.getExchangeSpecification().getSecretKey());
-    this.nonceFactory = nonceFactory;
   }
 
   @Override
@@ -59,11 +53,6 @@ public class BTCEBasePollingService<T extends BTCE> extends BaseExchangeService 
     currencyPairs.addAll(BTCEAdapters.adaptCurrencyPairs(btce.getInfo().getPairs().keySet()));
 
     return currencyPairs;
-  }
-
-  protected SynchronizedValueFactory<Integer> nextNonce() {
-
-    return nonceFactory;
   }
 
   protected void checkResult(BTCEReturn<?> result) {

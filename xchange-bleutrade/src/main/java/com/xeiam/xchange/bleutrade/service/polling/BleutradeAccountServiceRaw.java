@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.util.List;
 
 import com.xeiam.xchange.Exchange;
-import com.xeiam.xchange.bleutrade.BleutradeAuthenticated;
 import com.xeiam.xchange.bleutrade.BleutradeException;
 import com.xeiam.xchange.bleutrade.dto.account.BleutradeBalance;
 import com.xeiam.xchange.bleutrade.dto.account.BleutradeBalanceReturn;
@@ -13,7 +12,7 @@ import com.xeiam.xchange.bleutrade.dto.account.BleutradeDepositAddress;
 import com.xeiam.xchange.bleutrade.dto.account.BleutradeDepositAddressReturn;
 import com.xeiam.xchange.exceptions.ExchangeException;
 
-public class BleutradeAccountServiceRaw extends BleutradeBasePollingService<BleutradeAuthenticated> {
+public class BleutradeAccountServiceRaw extends BleutradeBasePollingService {
 
   /**
    * Constructor
@@ -22,14 +21,13 @@ public class BleutradeAccountServiceRaw extends BleutradeBasePollingService<Bleu
    */
   public BleutradeAccountServiceRaw(Exchange exchange) {
 
-    // TODO look at this
-    super(BleutradeAuthenticated.class, exchange);
+    super(exchange);
   }
 
   public BleutradeDepositAddress getBleutradeDepositAddress(String currency) throws IOException {
 
     try {
-      BleutradeDepositAddressReturn response = bleutrade.getDepositAddress(apiKey, signatureCreator, String.valueOf(nextNonce()), currency);
+      BleutradeDepositAddressReturn response = bleutrade.getDepositAddress(apiKey, signatureCreator, exchange.getNonceFactory(), currency);
 
       if (!response.getSuccess()) {
         throw new ExchangeException(response.getMessage());
@@ -44,7 +42,7 @@ public class BleutradeAccountServiceRaw extends BleutradeBasePollingService<Bleu
   public BleutradeBalance getBleutradeBalance(String currency) throws IOException {
 
     try {
-      BleutradeBalanceReturn response = bleutrade.getBalance(apiKey, signatureCreator, String.valueOf(nextNonce()), currency);
+      BleutradeBalanceReturn response = bleutrade.getBalance(apiKey, signatureCreator, exchange.getNonceFactory(), currency);
 
       if (!response.getSuccess()) {
         throw new ExchangeException(response.getMessage());
@@ -59,7 +57,7 @@ public class BleutradeAccountServiceRaw extends BleutradeBasePollingService<Bleu
   public List<BleutradeBalance> getBleutradeBalances() throws IOException {
 
     try {
-      BleutradeBalancesReturn response = bleutrade.getBalances(apiKey, signatureCreator, String.valueOf(nextNonce()));
+      BleutradeBalancesReturn response = bleutrade.getBalances(apiKey, signatureCreator, exchange.getNonceFactory());
 
       if (!response.getSuccess()) {
         throw new ExchangeException(response.getMessage());

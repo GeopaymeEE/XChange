@@ -8,7 +8,7 @@ import si.mazi.rescu.ParamsDigest;
 import si.mazi.rescu.RestProxyFactory;
 
 import com.xeiam.xchange.Exchange;
-import com.xeiam.xchange.bter.BTER;
+import com.xeiam.xchange.bter.BTERAuthenticated;
 import com.xeiam.xchange.bter.dto.BTERBaseResponse;
 import com.xeiam.xchange.bter.service.BTERHmacPostBodyDigest;
 import com.xeiam.xchange.currency.CurrencyPair;
@@ -16,35 +16,24 @@ import com.xeiam.xchange.exceptions.ExchangeException;
 import com.xeiam.xchange.service.BaseExchangeService;
 import com.xeiam.xchange.service.polling.BasePollingService;
 
-public class BTERBasePollingService<T extends BTER> extends BaseExchangeService implements BasePollingService {
-
-  private static final long START_MILLIS = 1356998400000L; // Jan 1st, 2013 in milliseconds from epoch
+public class BTERBasePollingService extends BaseExchangeService implements BasePollingService {
 
   protected final String apiKey;
-  protected final T bter;
+  protected final BTERAuthenticated bter;
   protected final ParamsDigest signatureCreator;
 
   /**
    * Constructor
    *
-   * @param type
    * @param exchange
    */
-  public BTERBasePollingService(Class<T> type, Exchange exchange) {
+  public BTERBasePollingService(Exchange exchange) {
 
     super(exchange);
 
-    this.bter = RestProxyFactory.createProxy(type, exchange.getExchangeSpecification().getSslUri());
+    this.bter = RestProxyFactory.createProxy(BTERAuthenticated.class, exchange.getExchangeSpecification().getSslUri());
     this.apiKey = exchange.getExchangeSpecification().getApiKey();
     this.signatureCreator = BTERHmacPostBodyDigest.createInstance(exchange.getExchangeSpecification().getSecretKey());
-  }
-
-  protected int nextNonce() {
-
-    // NOTE: this nonce creation formula is not bullet-proof:
-    // - It allows for only one request per .25 seconds,
-    // - It will cycle over MAX_INTEGER and start producing illegal negative nonces on January 5, 2030
-    return (int) ((System.currentTimeMillis() - START_MILLIS) / 250L);
   }
 
   @Override

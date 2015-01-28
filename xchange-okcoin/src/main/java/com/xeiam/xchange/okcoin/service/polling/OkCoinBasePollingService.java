@@ -1,6 +1,5 @@
 package com.xeiam.xchange.okcoin.service.polling;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import com.xeiam.xchange.Exchange;

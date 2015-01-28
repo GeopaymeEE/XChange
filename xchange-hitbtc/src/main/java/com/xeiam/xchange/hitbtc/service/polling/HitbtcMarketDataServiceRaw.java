@@ -2,11 +2,8 @@ package com.xeiam.xchange.hitbtc.service.polling;
 
 import java.io.IOException;
 
-import si.mazi.rescu.SynchronizedValueFactory;
-
 import com.xeiam.xchange.Exchange;
 import com.xeiam.xchange.currency.CurrencyPair;
-import com.xeiam.xchange.hitbtc.Hitbtc;
 import com.xeiam.xchange.hitbtc.HitbtcAdapters;
 import com.xeiam.xchange.hitbtc.dto.HitbtcException;
 import com.xeiam.xchange.hitbtc.dto.marketdata.HitbtcOrderBook;
@@ -17,17 +14,16 @@ import com.xeiam.xchange.hitbtc.dto.marketdata.HitbtcTrades;
 /**
  * @author kpysniak
  */
-public class HitbtcMarketDataServiceRaw extends HitbtcBasePollingService<Hitbtc> {
+public class HitbtcMarketDataServiceRaw extends HitbtcBasePollingService {
 
   /**
    * Constructor
    *
    * @param exchange
-   * @param nonceFactory
    */
-  protected HitbtcMarketDataServiceRaw(Exchange exchange, SynchronizedValueFactory<Long> nonceFactory) {
+  protected HitbtcMarketDataServiceRaw(Exchange exchange) {
 
-    super(Hitbtc.class, exchange, nonceFactory);
+    super(exchange);
   }
 
   public HitbtcTicker getHitbtcTicker(CurrencyPair currencyPair) throws IOException {
