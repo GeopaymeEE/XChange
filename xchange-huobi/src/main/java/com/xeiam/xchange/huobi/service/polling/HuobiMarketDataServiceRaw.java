@@ -1,6 +1,6 @@
 package com.xeiam.xchange.huobi.service.polling;
 
-import com.xeiam.xchange.ExchangeSpecification;
+import com.xeiam.xchange.Exchange;
 import com.xeiam.xchange.currency.CurrencyPair;
 import com.xeiam.xchange.huobi.Huobi;
 import com.xeiam.xchange.huobi.dto.marketdata.HuobiTickerReturn;
@@ -11,9 +11,9 @@ import java.io.IOException;
  * Created by Yingzhe on 1/3/2015.
  */
 public class HuobiMarketDataServiceRaw extends HuobiBasePollingService<Huobi>{
-    public HuobiMarketDataServiceRaw(ExchangeSpecification exchangeSpecification) {
+    public HuobiMarketDataServiceRaw(Exchange exchange) {
 
-        super(Huobi.class, exchangeSpecification);
+        super(Huobi.class, exchange);
     }
 
     public HuobiTickerReturn getHuobiTickerReturn(CurrencyPair currencyPair) throws IOException {

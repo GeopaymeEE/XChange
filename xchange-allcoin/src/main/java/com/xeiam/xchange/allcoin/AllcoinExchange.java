@@ -30,7 +30,7 @@ public class AllcoinExchange extends BaseExchange implements Exchange {
   public void applySpecification(ExchangeSpecification exchangeSpecification) {
 
     super.applySpecification(exchangeSpecification);
-    this.pollingMarketDataService = new AllcoinMarketDataService(exchangeSpecification, nonceFactory);
+    this.pollingMarketDataService = new AllcoinMarketDataService(this, nonceFactory);
   }
 
 }

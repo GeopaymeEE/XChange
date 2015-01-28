@@ -3,13 +3,12 @@ package com.xeiam.xchange.allcoin.api2.service.polling;
 import java.io.IOException;
 import java.util.*;
 
+import com.xeiam.xchange.Exchange;
 import com.xeiam.xchange.allcoin.api2.dto.marketdata.AllcoinAllTickersReturn;
-import com.xeiam.xchange.allcoin.api2.dto.marketdata.AllcoinTicker;
 import si.mazi.rescu.ParamsDigest;
 import si.mazi.rescu.RestProxyFactory;
 import si.mazi.rescu.SynchronizedValueFactory;
 
-import com.xeiam.xchange.ExchangeSpecification;
 import com.xeiam.xchange.allcoin.Allcoin;
 import com.xeiam.xchange.currency.CurrencyPair;
 import com.xeiam.xchange.service.BaseExchangeService;
@@ -23,20 +22,21 @@ public class AllcoinBasePollingService<T extends Allcoin> extends BaseExchangeSe
   protected final String apiKey;
   protected final ParamsDigest signatureCreator;
   private static HashMap<String, CurrencyPair> CURRENCY_PAIR_MAP;
+  private static List<CurrencyPair> CURRENCY_PAIR_LIST;
 
   /**
    * Constructor Initialize common properties from the exchange specification
    * 
-   * @param exchangeSpecification The {@link com.xeiam.xchange.ExchangeSpecification}
+   * @param exchange The {@link com.xeiam.xchange.Exchange}
    */
-  protected AllcoinBasePollingService(Class<T> allcoinType, ExchangeSpecification exchangeSpecification, SynchronizedValueFactory<Long> nonceFactory) {
+  protected AllcoinBasePollingService(Class<T> allcoinType, Exchange exchange, SynchronizedValueFactory<Long> nonceFactory) {
 
-    super(exchangeSpecification);
+    super(exchange);
 
     this.valueFactory = nonceFactory;
-    this.allcoin = RestProxyFactory.createProxy(allcoinType, exchangeSpecification.getSslUri());
-    this.apiKey = exchangeSpecification.getApiKey();
-    String apiKey = exchangeSpecification.getSecretKey();
+    this.allcoin = RestProxyFactory.createProxy(allcoinType, exchange.getExchangeSpecification().getSslUri());
+    this.apiKey = exchange.getExchangeSpecification().getApiKey();
+    String apiKey = exchange.getExchangeSpecification().getSecretKey();
     // this.signatureCreator = apiKey != null && !apiKey.isEmpty() ? AllcoinHmacDigest.createInstance(apiKey) : null;
     this.signatureCreator = null;
   }
@@ -62,8 +62,12 @@ public class AllcoinBasePollingService<T extends Allcoin> extends BaseExchangeSe
 	}
 
   @Override
-  public Collection<CurrencyPair> getExchangeSymbols() throws IOException {
+  public List<CurrencyPair> getExchangeSymbols() throws IOException {
 
-    return this.getCurrencyPairMap().values();
+    if (CURRENCY_PAIR_LIST == null) {
+      CURRENCY_PAIR_LIST = new ArrayList<CurrencyPair>(this.getCurrencyPairMap().values());
+    }
+
+    return CURRENCY_PAIR_LIST;
   }
 }

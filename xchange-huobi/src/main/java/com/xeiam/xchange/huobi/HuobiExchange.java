@@ -17,7 +17,7 @@ public class HuobiExchange extends BaseExchange implements Exchange {
     public void applySpecification(ExchangeSpecification exchangeSpecification) {
 
         super.applySpecification(exchangeSpecification);
-        this.pollingMarketDataService = new HuobiMarketDataService(exchangeSpecification);
+        this.pollingMarketDataService = new HuobiMarketDataService(this);
     }
 
     @Override

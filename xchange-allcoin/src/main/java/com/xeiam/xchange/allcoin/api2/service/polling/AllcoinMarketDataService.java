@@ -1,26 +1,25 @@
 package com.xeiam.xchange.allcoin.api2.service.polling;
 
 import java.io.IOException;
-import java.util.Collection;
 
-import si.mazi.rescu.SynchronizedValueFactory;
+import com.xeiam.xchange.Exchange;
 
-import com.xeiam.xchange.ExchangeException;
-import com.xeiam.xchange.ExchangeSpecification;
-import com.xeiam.xchange.NotAvailableFromExchangeException;
-import com.xeiam.xchange.NotYetImplementedForExchangeException;
 import com.xeiam.xchange.allcoin.AllcoinAdapters;
 import com.xeiam.xchange.currency.CurrencyPair;
 import com.xeiam.xchange.dto.marketdata.OrderBook;
 import com.xeiam.xchange.dto.marketdata.Ticker;
 import com.xeiam.xchange.dto.marketdata.Trades;
-import com.xeiam.xchange.service.polling.PollingMarketDataService;
+import com.xeiam.xchange.exceptions.ExchangeException;
+import com.xeiam.xchange.exceptions.NotAvailableFromExchangeException;
+import com.xeiam.xchange.exceptions.NotYetImplementedForExchangeException;
+import com.xeiam.xchange.service.polling.marketdata.PollingMarketDataService;
+import si.mazi.rescu.SynchronizedValueFactory;
 
 public class AllcoinMarketDataService extends AllcoinMarketDataServiceRaw implements PollingMarketDataService {
 
-  public AllcoinMarketDataService(ExchangeSpecification exchangeSpecification, SynchronizedValueFactory<Long> nonceFactory) {
+  public AllcoinMarketDataService(Exchange exchange, SynchronizedValueFactory<Long> nonceFactory) {
 
-    super(exchangeSpecification, nonceFactory);
+    super(exchange, nonceFactory);
   }
 
   @Override

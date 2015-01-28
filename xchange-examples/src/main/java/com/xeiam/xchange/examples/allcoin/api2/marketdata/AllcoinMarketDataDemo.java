@@ -9,7 +9,7 @@ import com.xeiam.xchange.dto.marketdata.Ticker;
 import com.xeiam.xchange.examples.allcoin.api2.AllcoinExampleUtils;
 import com.xeiam.xchange.allcoin.api2.dto.marketdata.AllcoinTickerReturn;
 import com.xeiam.xchange.allcoin.api2.service.polling.AllcoinMarketDataServiceRaw;
-import com.xeiam.xchange.service.polling.PollingMarketDataService;
+import com.xeiam.xchange.service.polling.marketdata.PollingMarketDataService;
 
 public class AllcoinMarketDataDemo {
 

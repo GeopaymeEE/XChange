@@ -1,6 +1,6 @@
 package com.xeiam.xchange.yacuna.service.polling;
 
-import com.xeiam.xchange.ExchangeSpecification;
+import com.xeiam.xchange.Exchange;
 import com.xeiam.xchange.currency.CurrencyPair;
 import com.xeiam.xchange.service.BaseExchangeService;
 import com.xeiam.xchange.service.polling.BasePollingService;
@@ -10,8 +10,9 @@ import com.xeiam.xchange.yacuna.dto.marketdata.YacunaTickerReturn;
 import si.mazi.rescu.RestProxyFactory;
 
 import java.io.IOException;
-import java.util.Collection;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * Created by Yingzhe on 12/27/2014.
@@ -19,12 +20,13 @@ import java.util.HashMap;
 public class YacunaBasePollingService<T extends Yacuna> extends BaseExchangeService implements BasePollingService {
 
   private static HashMap<String, CurrencyPair> CURRENCY_PAIR_MAP;
+  private static List<CurrencyPair> CURRENCY_PAIR_LIST;
   protected final T yacuna;
 
-  protected YacunaBasePollingService(Class<T> type, ExchangeSpecification exchangeSpecification) {
+  protected YacunaBasePollingService(Class<T> type, Exchange exchange) {
 
-    super(exchangeSpecification);
-    this.yacuna = RestProxyFactory.createProxy(type, exchangeSpecification.getSslUri());
+    super(exchange);
+    this.yacuna = RestProxyFactory.createProxy(type, exchange.getExchangeSpecification().getSslUri());
   }
 
   protected HashMap<String, CurrencyPair> getCurrencyPairMap() throws IOException {
@@ -46,8 +48,12 @@ public class YacunaBasePollingService<T extends Yacuna> extends BaseExchangeServ
   }
 
   @Override
-  public Collection<CurrencyPair> getExchangeSymbols() throws IOException {
+  public List<CurrencyPair> getExchangeSymbols() throws IOException {
 
-    return this.getCurrencyPairMap().values();
+    if (CURRENCY_PAIR_LIST == null) {
+      CURRENCY_PAIR_LIST = new ArrayList<CurrencyPair>(this.getCurrencyPairMap().values());
+    }
+
+    return CURRENCY_PAIR_LIST;
   }
 }

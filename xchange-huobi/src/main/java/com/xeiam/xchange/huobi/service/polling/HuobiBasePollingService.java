@@ -1,6 +1,6 @@
 package com.xeiam.xchange.huobi.service.polling;
 
-import com.xeiam.xchange.ExchangeSpecification;
+import com.xeiam.xchange.Exchange;
 import com.xeiam.xchange.currency.CurrencyPair;
 import com.xeiam.xchange.huobi.Huobi;
 import com.xeiam.xchange.service.BaseExchangeService;
@@ -8,20 +8,22 @@ import com.xeiam.xchange.service.polling.BasePollingService;
 import si.mazi.rescu.RestProxyFactory;
 
 import java.io.IOException;
-import java.util.Collection;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * Created by Yingzhe on 1/3/2015.
  */
 public class HuobiBasePollingService<T extends Huobi> extends BaseExchangeService implements BasePollingService {
     private static HashMap<String, CurrencyPair> CURRENCY_PAIR_MAP;
+    private static List<CurrencyPair> CURRENCY_PAIR_LIST;
     protected final T huobi;
 
-    protected HuobiBasePollingService(Class<T> type, ExchangeSpecification exchangeSpecification) {
+    protected HuobiBasePollingService(Class<T> type, Exchange exchange) {
 
-        super(exchangeSpecification);
-        this.huobi = RestProxyFactory.createProxy(type, exchangeSpecification.getSslUri());
+        super(exchange);
+        this.huobi = RestProxyFactory.createProxy(type, exchange.getExchangeSpecification().getSslUri());
     }
 
     protected HashMap<String, CurrencyPair> getCurrencyPairMap() throws IOException {
@@ -36,8 +38,12 @@ public class HuobiBasePollingService<T extends Huobi> extends BaseExchangeServic
     }
 
     @Override
-    public Collection<CurrencyPair> getExchangeSymbols() throws IOException {
+    public List<CurrencyPair> getExchangeSymbols() throws IOException {
 
-        return this.getCurrencyPairMap().values();
+        if (CURRENCY_PAIR_LIST == null) {
+            CURRENCY_PAIR_LIST = new ArrayList<CurrencyPair>(this.getCurrencyPairMap().values());
+        }
+
+        return CURRENCY_PAIR_LIST;
     }
 }

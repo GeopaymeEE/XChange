@@ -1,10 +1,9 @@
 package com.xeiam.xchange.btc38.service.polling;
 
-import com.xeiam.xchange.ExchangeSpecification;
+import com.xeiam.xchange.Exchange;
 import com.xeiam.xchange.btc38.Btc38;
 import com.xeiam.xchange.btc38.dto.marketdata.Btc38Ticker;
 import com.xeiam.xchange.btc38.dto.marketdata.Btc38TickerReturn;
-import si.mazi.rescu.RestProxyFactory;
 
 import java.io.IOException;
 import java.util.Map;
@@ -17,11 +16,11 @@ public class Btc38MarketDataServiceRaw extends Btc38BasePollingService<Btc38> {
   /**
    * Constructor for Btc38MarketDataServiceRaw
    *
-   * @param exchangeSpecification The {@link com.xeiam.xchange.ExchangeSpecification}
+   * @param exchange The {@link com.xeiam.xchange.Exchange}
    */
-  public Btc38MarketDataServiceRaw(ExchangeSpecification exchangeSpecification) {
+  public Btc38MarketDataServiceRaw(Exchange exchange) {
 
-    super(Btc38.class, exchangeSpecification);
+    super(Btc38.class, exchange);
   }
 
   /**

@@ -1,6 +1,6 @@
 package com.xeiam.xchange.yacuna.service.polling;
 
-import com.xeiam.xchange.ExchangeSpecification;
+import com.xeiam.xchange.Exchange;
 import com.xeiam.xchange.currency.CurrencyPair;
 import com.xeiam.xchange.yacuna.Yacuna;
 import com.xeiam.xchange.yacuna.dto.marketdata.YacunaTicker;
@@ -14,9 +14,9 @@ import java.util.List;
  */
 public class YacunaMarketDataServiceRaw extends YacunaBasePollingService<Yacuna> {
 
-  public YacunaMarketDataServiceRaw(ExchangeSpecification exchangeSpecification) {
+  public YacunaMarketDataServiceRaw(Exchange exchange) {
 
-    super(Yacuna.class, exchangeSpecification);
+    super(Yacuna.class, exchange);
   }
 
   public List<YacunaTicker> getAllTickers() throws IOException {

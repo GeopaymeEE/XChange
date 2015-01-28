@@ -22,7 +22,7 @@ public class Btc38Exchange extends BaseExchange implements Exchange {
 
     super.applySpecification(exchangeSpecification);
 
-    this.pollingMarketDataService = new Btc38MarketDataService(exchangeSpecification);
+    this.pollingMarketDataService = new Btc38MarketDataService(this);
   }
 
   @Override
