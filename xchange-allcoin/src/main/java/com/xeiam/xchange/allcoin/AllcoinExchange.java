@@ -1,16 +1,15 @@
 package com.xeiam.xchange.allcoin;
 
+import com.xeiam.xchange.utils.nonce.CurrentTimeNonceFactory;
 import si.mazi.rescu.SynchronizedValueFactory;
 
 import com.xeiam.xchange.BaseExchange;
-import com.xeiam.xchange.Exchange;
 import com.xeiam.xchange.ExchangeSpecification;
 import com.xeiam.xchange.allcoin.api2.service.polling.AllcoinMarketDataService;
-import com.xeiam.xchange.utils.nonce.LongTimeNonceFactory;
 
-public class AllcoinExchange extends BaseExchange implements Exchange {
+public class AllcoinExchange extends BaseExchange {
 
-  private final SynchronizedValueFactory<Long> nonceFactory = new LongTimeNonceFactory();
+  private final SynchronizedValueFactory<Long> nonceFactory = new CurrentTimeNonceFactory();
 
   @Override
   public ExchangeSpecification getDefaultExchangeSpecification() {
@@ -33,4 +32,9 @@ public class AllcoinExchange extends BaseExchange implements Exchange {
     this.pollingMarketDataService = new AllcoinMarketDataService(this, nonceFactory);
   }
 
+  @Override
+  public SynchronizedValueFactory<Long> getNonceFactory() {
+
+    return nonceFactory;
+  }
 }

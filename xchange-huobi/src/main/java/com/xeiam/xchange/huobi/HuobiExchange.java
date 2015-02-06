@@ -4,11 +4,15 @@ import com.xeiam.xchange.BaseExchange;
 import com.xeiam.xchange.Exchange;
 import com.xeiam.xchange.ExchangeSpecification;
 import com.xeiam.xchange.huobi.service.polling.HuobiMarketDataService;
+import com.xeiam.xchange.utils.nonce.CurrentTimeNonceFactory;
+import si.mazi.rescu.SynchronizedValueFactory;
 
 /**
  * Created by Yingzhe on 12/30/2014.
  */
-public class HuobiExchange extends BaseExchange implements Exchange {
+public class HuobiExchange extends BaseExchange {
+    private final SynchronizedValueFactory<Long> nonceFactory = new CurrentTimeNonceFactory();
+
     public HuobiExchange() {
 
     }
@@ -30,5 +34,11 @@ public class HuobiExchange extends BaseExchange implements Exchange {
         exchangeSpecification.setExchangeName("Huobi");
         exchangeSpecification.setExchangeDescription("Huobi is a Chinese Bitcoin exchange");
         return exchangeSpecification;
+    }
+
+    @Override
+    public SynchronizedValueFactory<Long> getNonceFactory() {
+
+        return nonceFactory;
     }
 }
